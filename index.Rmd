@@ -1,0 +1,21 @@
+--- 
+title: "Dimensionality Reduction BIBB/BAUA"
+description: "Exchange-Value and Use-Value Oriented Labor in the Real World"
+author: "Sabine Pfeiffer, Maximilian Held"
+date: '`r Sys.Date()`'
+biblatex: yes
+bibliography: held_library.bib
+biblio-style: authoryear
+documentclass: book
+geometry: margin=4.5cm
+github-repo: QWrks/worktypes
+link-citations: yes
+site: bookdown::bookdown_site
+always_allow_html: yes
+---
+  
+# Background
+
+```{r setup, cache = FALSE, include = FALSE}
+source("setup.R")
+```
