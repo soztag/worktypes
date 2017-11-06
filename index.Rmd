@@ -1,4 +1,4 @@
---- 
+---
 title: "Dimensionality Reduction BIBB/BAUA"
 description: "Exchange-Value and Use-Value Oriented Labor in the Real World"
 author: "Sabine Pfeiffer, Maximilian Held"
@@ -13,9 +13,93 @@ link-citations: yes
 site: bookdown::bookdown_site
 always_allow_html: yes
 ---
-  
+
 # Background
 
 ```{r setup, cache = FALSE, include = FALSE}
 source("setup.R")
 ```
+
+We hypothesize that labor in a developed capitalist economy differs by two orthogonal dimensions familiar from Marxist political economy:
+
+1. Labor is either concerned with *direct production* of goods and services, or with the *reproduction* of the basis of production and the institutions necessary for the capitalist mode of production.
+2. Labor is either concerned primarily with the *use value* or the *exchange value* of its product.
+
+Some example occupations to illustrate this schema are listed in table \@ref(tab:examples).
+
+Table: (\#tab:examples) Examples of Jobs in a Marxist Categorisation of Labor
+
+|                | Production           | Reproduction               |
+|----------------|----------------------|----------------------------|
+| **Use Value**      | Engineering a Bridge | Raising a Child            |
+| **Exchange Value** | Marketing a Shirt    | Litigating Property Rights |
+
+<!-- TODO the Raising a child cell seems odd; this could possibly be in the BIBB/BAuA Data -- did I get this wrong? -->
+
+<!-- TODO solve weighting issue -->
+
+*If* this categorisation can be empirically supported, it will be interesting to track, explain as well as to criticize any changes as they occur over time, or differences between locales and sectors.
+
+We test this hypothesis using fine-grained data on the type of work done by 20.036 gainfully employed persons from Germany, gathered as part the regular [BIBB/BAuA Employment Survey](https://www.baua.de/DE/Themen/Arbeitswelt-und-Arbeitsschutz-im-Wandel/Arbeitsweltberichterstattung/Arbeitsbedingungen/BIBB-BAuA-2012.html) in 2012 [@hall_bibb/baua_2015, @wittig_grundauswertung_2012].
+Respondents independently rated the below activities in table \@ref(tab:vars) as occuring
+*often*, *sometimes* or *never*. [^no-computers]
+
+[^no-computers]: The full list of types of work performed also includes *working with computers* (`F318`) and *using the Internet or editing e-mails* (`F319`).
+We do not include these in our analysis, because they are oddly unspecific and rather refer to the tool used, rather than the *type* of work conducted.
+These are *orthogonal* to the other activities; you may, for example, *provide advice and information* (`F314`) *by* writing an email.
+
+```{r vars-of-interest}
+1+1
+```
+
+## Limitations of the Data
+
+
+- multiple correspondence
+
+
+ ist der Mikrozensus 2011). Die resultierenden Gewichtungskomponenten stehen im Datensatz als Variablen Des2012 (Designgewicht) und Gew2012 (Produkt aus Design- und Ausfallgewicht) zur Verfügung. Für die Berechnung von Punkt- oder Varianzschätzern für die Grundgesamtheit anhand der Stichprobendaten steht ein Hochrechnungsfaktor auf Basis des Mikrozensus 2011 zur Verfügung (Gew2012_hr).
+
+
+In our preliminary operationalisation of the concept, we assume that the the cells in table \@ref(tab:examples) map onto particular "jobs", including, in principle, unpaid and informal jobs.
+Many jobs will likely feature *several* of the above types of labor, such as when an engineer is also involved with marketing aspects of the final product.
+However, it seems plausible to assume that at the *individual level*, in all but the smallest organisations, some inter-personal division of labor will demarkate distinct roles along this categorisation, with one *dominant* dominant perspective. [^functional-org]
+
+[^functional-org]: Such inter-personal division of labor by labor type is akin to a functional grouping at the organizational level.
+We assume that even should an organisation adhere to a different structure --- say, an org chart grouped by region or product --- *individual* jobs could still be characterized in our above "functional" terms.
+
+By this operationalisation, we would expect to find *clusters of jobs* who share yet-to-be-determined characteristics that reflect the above categorisation.
+For example, there should be a group of otherwise potentially dissimilar jobs, which are all concerned with designing, maintaining and enforcing the capitalist mode of production (the south-eastern cell in \@ref(tab:examples)), including, perhaps, lobbying, legal work but also security and defense.
+
+Alternatively, the above categorisation of labor could also be operationalised differently, including a different *unit* or *mode* of analysis.
+
+Instead of our chosen *individual* approach, with discrete *jobs*, one may choose a *collective unit of analysis*, such as perhaps organisations or entire sectors of the economy, to answer the same question.
+
+We here follow a *Q-technique analysis* [^alphabet-soup] of job characteristics, where *jobs* constitute the *columns*, and characteristics (or their manifest proxies) constitute the *rows* of our would-be data.
+We are, in other words, investigating whether *jobs cluster (or covary) across job characteristics*, that is, whether some jobs are similar *as measured by these characteristics*.
+Instead, we could also transpose the data matrix before analysis, and apply the more familiar *R-technique*.
+In this case, we would be looking for *clustered job characteristics across jobs*, that is, whether some characteristics co-occured on some surveyed jobs.
+This seemingly semantic distinction, in fact, implies an entirely different phenomenon, especially when compared cross-sectionally or over time.
+Under *Q-technique*, we would render differences and changes in labor patterns as differences and changes *between* jobs: For example, a the north-east cell type job from table \@ref(tab:examples) may become more, or less prevalent.
+Under *R-technique*, the same differences and changes would be rendered as differences and changes *within* jobs: For example, some
+
+, we could transpose the data matrix before the analysis.
+By such a --- more familiar --- *R-technique*, we would be
+
+This is meanginfful for the kind of measurement.
+
+[^alphabet-soup]: The terminology is taken from @Thompson-2004 [82].
+*R-Technique* refers to an analysis where participants (here, loosely, job holders) constitute the rows, and variables (here, loosely, job characteristics) constitute the columns.
+    By contrast, in *Q-Technique*, rows are populated by variables, and columns by participants.
+    This approach is also known, more informatively, as *inverted factor analysis*, though the data matrix is actually simply being *transposed*.
+
+    Though this terminology originally applies to techniques of *factor* analysis, we here use it more broadly to describe analytical approaches, including other algorithms.
+
+
+
+
+
+The purpose of this analysis is to find out, whether --- and *how* --- different jobs can be clustered by the frequency of selected tasks performed as part of these jobs.
+In particular, we hypothesize that jobs fall into one of the below four categories:
+
+TODO it is also possible that actually, these different clusters exist WITHIN jobs, and the balance shifts within jobs
