@@ -1,6 +1,7 @@
 # dependencies ====
 library(bookdown)
 library(knitr)
+library(tibble)
 
 # knitr setup ====
 #opts_knit$set(root.dir = normalizePath(getwd()))  # make sure the knitr path is correct

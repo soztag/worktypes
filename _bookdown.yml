@@ -1,6 +1,7 @@
 book_filename: "worktypes"
 rmd_files: [
   "index.Rmd",
+  "bibbbaua.Rmd",
   "references.Rmd"
 ]
 delete_merged_file: true
