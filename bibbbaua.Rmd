@@ -187,13 +187,28 @@ It also carries some limitations that are worth keeping in mind for the below an
     
 4. The longitudinal design of the BIBB/BAuA surveys strictly limits our ability to investigate any trends in activities, because we cannot match individual respondents (see [this issue](https://github.com/QWrks/worktypes/issues/4)).
 As a stopgap, we can only try to match units at the macro level, such as industries or regions, though this would strictly speaking constitute an ecological fallacy, and may be further beset by changing sector compositions and definitions over the span of the BIBB/BAuA survey waves (see [this issue](https://github.com/QWrks/worktypes/issues/5)). 
+    
+5. The BIBB/BAuA data, by definition, over cover workplace activities, and not unpaid or informal work.
+    
+    Some of the above-hypothesized Marxist typology of activities often take place as informal or unpaid work, such as the reproduction of use values in raising a child, or caring for the elderly.
+    By contrast, the production of exchange values, by definition, almost exclusively happens in the context of the formal economy, because otherwise, property rights to those very exchange values could not be instituted (see [this issue](https://github.com/QWrks/worktypes/issues/9)).
+    
+    There is, therefore, a mismatch between the BIBB/BAuA data and the typology it is supposed to test.
+    As long as we limit our research question to *relative changes in emphasis* between the cells of this marxist typology in the workplace, this need not be a problem: reproduction of use values, for example, may be generally underrepresented in the workplace, but *changes* should still be detectible.
+    
+    However, an additional problem may arise as, for example, more reproduction of use values is transferred from unpaid and informal work, to formal work, as appears to be the case in the extension of child care.
+    Such a transfer into the formal economy would increase the relative share of this marxist category, and may thereby mask other underlying changes in the economy.
+    
+    For example, the influx of (paid, formal!) work hours in recently extended child care may partially mask in the relative activity data a trend to more exchange-value oriented activities *all other things equal*.
+    
+    In short, the problem with workplace activity data is that all other things tend emphatically *not* to be equal, as the boundaries over what is, and is not formal and paid work tend to shift over time, especially the long periods of time covered by BIBB/BAuA.
 
   
 ## Possible Analytical Approaches
 
 In our preliminary operationalisation of the concept, we assume that the the cells in table \@ref(tab:examples) map onto particular "jobs", including, in principle, unpaid and informal jobs.
 Many jobs will likely feature *several* of the above types of labor, such as when an engineer is also involved with marketing aspects of the final product.
-However, it seems plausible to assume that at the *individual level*, in all but the smallest organisations, some inter-personal division of labor will demarkate distinct roles along this categorisation, with one *dominant* dominant perspective. [^functional-org]
+However, it seems plausible to assume that at the *individual level*, in all but the smallest organisations, some inter-personal division of labor will demarkate distinct roles along this categorisation, with one *dominant* perspective. [^functional-org]
 
 [^functional-org]: Such inter-personal division of labor by labor type is akin to a functional grouping at the organizational level.
 We assume that even should an organisation adhere to a different structure --- say, an org chart grouped by region or product --- *individual* jobs could still be characterized in our above "functional" terms.
