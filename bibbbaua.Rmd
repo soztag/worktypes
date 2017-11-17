@@ -245,29 +245,38 @@ act <- readRDS(file = "act.rds")
 Let us first consider the weighted and unweighted frequencies of the different activities.
 
 ```{r freqs, fig.cap="Raw and Weighted Frequencies of Work Activities"}
-piechart <- gather(data = act, key = "activity", value = "frequency", manuf:clean)
-piechart <- group_by(.data = piechart, activity, frequency)
-piechart <- summarize(.data = piechart, count = n(), wcount = sum(weight))
-piechart <- mutate(.data = piechart,
-                   raw = count/sum(count), 
-                   weighted = wcount/sum(wcount))
-piechart <- gather(data = piechart, 
-                   raw, 
-                   weighted, 
-                   -activity, 
-                   -frequency, 
-                   key = weighting,
-                   value = percentage)
+freqs <- gather(data = act, key = "activity", value = "frequency", manuf:clean)
+freqs <- group_by(.data = freqs, activity, frequency)
+freqs <- summarize(.data = freqs, count = n(), wcount = sum(weight))
+freqs <- mutate(.data = freqs,
+                raw = count/sum(count), 
+                weighted = wcount/sum(wcount))
+freqs <- gather(data = freqs, 
+                raw, 
+                weighted, 
+                -activity, 
+                -frequency, 
+                key = weighting,
+                value = percentage)
+# reinstate factors (killed by above)
+freqs$frequency <- readr::parse_factor(x = freqs$frequency, levels = c("never", "sometimes", "often"), ordered = TRUE, na = "no reply")
 
-g <- ggplot(data = piechart, mapping = aes(
+g <- ggplot(data = freqs, mapping = aes(
   x = weighting,
   y = percentage * 100,
   fill = activity,
   alpha = frequency))
 g <- g + geom_bar(stat = "identity")
-# g <- g + coord_flip()
 g <- g + facet_wrap(~activity)
-g
+g <- g + scale_alpha_manual(
+  values = c(never = 0, sometimes = 0.5, often = 1),
+  name = "Frequency",
+  na.value = 1)
+g <- g + scale_fill_discrete(name = "Activity")
+g <- g + scale_y_continuous(name = "Percentage")
+g <- g + scale_x_discrete(name = "Weighting")
+# g
+plotly::ggplotly(g)
 ```
 
 Figure \@ref{fig:freqs} plots the raw and weighted frequencies of the different work activities.
