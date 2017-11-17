@@ -275,7 +275,7 @@ g <- g + scale_alpha_manual(
 g <- g + scale_fill_discrete(name = "Activity", guide = FALSE)
 g <- g + scale_y_continuous(name = "Percentage")
 g <- g + scale_x_discrete(name = "Weighting")
-if (!(pensieve:::assert_n_infer_use_js(use_js = NULL))) {
+if (!(pensieve:::assert_n_infer_use_js())) {
   plot(g)
 } else {
   g <- g + theme(legend.position = "none")
@@ -288,13 +288,16 @@ The activities have a fairly wide spread; giving `advice` is done often by more 
 The overall reported frequencies sum up to *much* more than 100 percent, which raises the possibility that participants did not consider the activities to be mutually exclusive.
 It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities, which may 
 
-
-We will also be relying on the (effective) working hours in some of the below calculations, so a look at their distribution is 
-
-```{r freq-hours, fig.cap="Raw and Weighted Working Hours"}
-
+```{r freq-hours, fig.cap="Reported Working Hours (Unweighted)"}
+g <- ggplot(data = act, mapping = aes(x = hours)) + geom_histogram(na.rm = TRUE, bins = 30)
+if (pensieve:::assert_n_infer_use_js()) {
+  ggplotly(g)
+} else {
+  plot(g)
+}
 ```
 
+Figure \@ref(fig:freq-hours) displays the distribution of reported working hours, which we will be using in some of the below calculations.
 
   
 ## Possible Analytical Approaches
