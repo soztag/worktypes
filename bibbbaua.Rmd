@@ -58,7 +58,7 @@ act_vars <- tibble::tribble(
   "Transporting, storing, shipping",
   "Transportieren, Lagern, Versenden",
   
-  "adv",
+  "marketing",
   "F309",
   "Advertising, marketing, public relations",
   "Werben, Marketing, Öffentlichkeitsarbeit, PR",
@@ -83,7 +83,7 @@ act_vars <- tibble::tribble(
   "Gathering information, investigating, documenting",
   "Informationen sammeln, Recherchieren, Dokumentieren",
   
-  "adv",
+  "advice",
   "F314",
   "Providing advice and information",
   "Beraten und Informieren",
@@ -203,8 +203,84 @@ As a stopgap, we can only try to match units at the macro level, such as industr
     
     In short, the problem with workplace activity data is that all other things tend emphatically *not* to be equal, as the boundaries over what is, and is not formal and paid work tend to shift over time, especially the long periods of time covered by BIBB/BAuA.
 
+
+## Descriptives
+
+```{r data-import, include=FALSE, eval=FALSE, cache=FALSE}
+bba <- haven::read_dta(file = "../../Google Drive/Hohenheim RA/bibbbaua/BibbBaua_SAP-mit-AV.dta")
+
+# import activities
+act <- bba[act_vars$id[1:16]]
+act <- haven::as_factor(x = act, levels = "labels")
+act <- purrr::map_df(.x = act, .f = function(x) {
+    x[x == "Keine Angabe"] <- NA
+    x <- forcats::fct_recode(f = x,
+                        often = "Häufig",
+                        sometimes = "Manchmal",
+                        never = "Nie",
+                        NULL = "Keine Angabe")
+    x <- forcats::fct_relevel(f = x,
+                              "never",
+                              "sometimes",
+                              "often")
+    x <- as.ordered(x)
+    # x <- forcats::fct_explicit_na(f = x, na_level = "no response")
+    return(x)
+  })
+colnames(act) <- act_vars$short[1:16]
+
+# add weights
+act$weight <- bba$Gew2012
+
+# add weekly hours
+act$hours <- as.integer(bba$AZ)
+saveRDS(object = act, file = "act.rds")
+```
+
+```{r read-from-disc}
+act <- readRDS(file = "act.rds")
+```
+
+
+Let us first consider the weighted and unweighted frequencies of the different activities.
+
+```{r freqs, fig.cap="Raw and Weighted Frequencies of Work Activities"}
+piechart <- gather(data = act, key = "activity", value = "frequency", manuf:clean)
+piechart <- group_by(.data = piechart, activity, frequency)
+piechart <- summarize(.data = piechart, count = n(), wcount = sum(weight))
+piechart <- mutate(.data = piechart,
+                   raw = count/sum(count), 
+                   weighted = wcount/sum(wcount))
+piechart <- gather(data = piechart, 
+                   raw, 
+                   weighted, 
+                   -activity, 
+                   -frequency, 
+                   key = weighting,
+                   value = percentage)
+
+g <- ggplot(data = piechart, mapping = aes(
+  x = weighting,
+  y = percentage * 100,
+  fill = activity,
+  alpha = frequency))
+g <- g + geom_bar(stat = "identity")
+# g <- g + coord_flip()
+g <- g + facet_wrap(~activity)
+g
+```
+
+Figure \@ref{fig:freqs} plots the raw and weighted frequencies of the different work activities.
+The activities have a fairly
+
+It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities, which may 
+
+
+
   
 ## Possible Analytical Approaches
+
+There are number of methodological 
 
 In our preliminary operationalisation of the concept, we assume that the the cells in table \@ref(tab:examples) map onto particular "jobs", including, in principle, unpaid and informal jobs.
 Many jobs will likely feature *several* of the above types of labor, such as when an engineer is also involved with marketing aspects of the final product.

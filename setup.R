@@ -1,7 +1,10 @@
 # dependencies ====
 library(bookdown)
+library(forcats)
+library(haven)
 library(knitr)
-library(tibble)
+library(plotly)
+library(tidyverse)
 
 # knitr setup ====
 #opts_knit$set(root.dir = normalizePath(getwd()))  # make sure the knitr path is correct
