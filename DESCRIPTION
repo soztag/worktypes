@@ -8,4 +8,7 @@ Imports:
   knitr,
   plotly,
   svglite,
-  tidyverse
+  tidyverse,
+  pensieve
+Remotes:
+  maxheld83/pensieve
