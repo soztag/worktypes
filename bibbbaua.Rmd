@@ -283,11 +283,17 @@ if (!(pensieve:::assert_n_infer_use_js(use_js = NULL))) {
 }
 ```
 
-Figure \@ref{fig:freqs} plots the raw and weighted frequencies of the different work activities.
-The activities have a fairly
-
+Figure \@ref(fig:freqs) plots the raw and weighted counts of reported frequencies across the reported work activities.
+The activities have a fairly wide spread; giving `advice` is done often by more than half of the respondents, while `manuf`acturing is quite rare.
+The overall reported frequencies sum up to *much* more than 100 percent, which raises the possibility that participants did not consider the activities to be mutually exclusive.
 It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities, which may 
 
+
+We will also be relying on the (effective) working hours in some of the below calculations, so a look at their distribution is 
+
+```{r freq-hours, fig.cap="Raw and Weighted Working Hours"}
+
+```
 
 
   
