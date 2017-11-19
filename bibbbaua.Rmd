@@ -12,107 +12,107 @@ These are *orthogonal* to the other activities; you may, for example, *provide a
 In addition, we created short names for more intuitive handling in the analysis.
 
 [^details]: The full german wording of the interviewer prompt reads:
-    
+
     > "Denken Sie bitte an ihre Berufstätigkeit als [...].
     > Ich nenne Ihnen nun einige ausgewählte Tätigkeiten.
     > Sagen Sie mir bitte, wie häufig diese bei Ihrer Arbeit vorkommen, ob häufig, manchmal oder nie."
-    
+
     The order of response options from `F303` to `F320` was randomized.
-    
+
     `F321` (logical) allowed for additional, open-ended activities, recorded in `TF321` (string).
 
 ```{r act-vars}
 act_vars <- tibble::tribble(
-  ~short, 
+  ~short,
   ~id,
   ~english,
   ~german,
-  
+
   "manuf",
   "F303",
   "Manufacturing, producing goods and commodities",
   "Herstellen, Produzieren von Waren und Gütern",
-  
+
   "meas",
   "F304",
   "Measuring, testing, quality control",
   "Messen, Prüfen, Qualität kontrollieren",
-  
+
   "monit",
   "F305",
   "Monitoring, control of machines, plants, technical processes",
   "Überwachen, Steuern von Maschinen, Anlagen, technischen Prozessen",
-  
+
   "repair",
   "F306",
   "Repairing, refurbishing",
   "Reparieren, Instandsetzen",
-  
+
   "purchase",
   "F307",
   "Purchasing, producing, selling",
   "Einkaufen, Beschaffen, Verkaufen",
-  
+
   "transp",
   "F308",
   "Transporting, storing, shipping",
   "Transportieren, Lagern, Versenden",
-  
+
   "marketing",
   "F309",
   "Advertising, marketing, public relations",
   "Werben, Marketing, Öffentlichkeitsarbeit, PR",
-  
+
   "org",
   "F310",
   "Organising, planning and preparing work processes. Here we are not talking about your own work processes.",
   "Organisieren, Planen und Vorbereiten von Arbeitsprozesse. Gemeint sind hier nicht die eigenen Arbeitsprozesse.",
-  
+
   "dev",
   "F311",
   "Developing, researching, constructing",
   "Entwickeln, Forschen, Konstruieren",
-  
+
   "train",
   "F312",
   "Training, instruction, teaching, educating",
   "Ausbilden, Lehren, Unterrichten, Erziehen",
-  
+
   "info",
   "F313",
   "Gathering information, investigating, documenting",
   "Informationen sammeln, Recherchieren, Dokumentieren",
-  
+
   "advice",
   "F314",
   "Providing advice and information",
   "Beraten und Informieren",
-  
+
   "ent",
   "F315",
   "Entertaining, accomodating, preparing food",
   "Bewirten, Beherbergen, Speisen bereiten",
-  
+
   "care",
   "F316",
   "Nursing, caring, healing",
   "Pflegen, Betreuen, Heilen",
-  
+
   "protect",
   "F317",
   "Protecting, guarding, patrolling, directing traffic",
   "Sichern, Schützen, Bewachen, Überwachen, Verkehr regeln",
-  
+
   "clean",
   "F320",
   "Cleaning, removing waste, recycling",
   "Reinigen, Abfall beseitigen, Recyclen",
-  
+
   "open",
   "F321",
   "Did we forget an activity that you frequently perform?",
   "Haben wir eine Tätigkeit vergessen, die Sie häufig ausüben?",
-  
+
   "open_activity",
   "TF321",
   "Open-ended description of missing activity.",
@@ -137,71 +137,72 @@ The BIBB/BAuA Employment Survey is a relatively large, in-depth and widely used 
 It also carries some limitations that are worth keeping in mind for the below analysis:
 
 1. The survey may carry substantial (hidden) bias.
-    
+
     The universe of cases are members of *private* households with *answered landline phones* only (for random-digit dialing) [@rohrbach-schmidt_bibb/baua_2013: 5].
     **Employees without landline phones**, estimated to be 11% already in 2008 [as cited in @gensicke_bibb/baua-erwerbstatigenbefragung_2012: 12] are not part of the sampling universe, and thus not even included in the response rate.
     It is hard to even estimate the bias that might result from this design choice, but the polling firm conducting BIBB/BAuA 2012 suggests that mobile-only persons have lower income and education, and are more likely to be marginally employed and live in east Germany.
-    
+
     A ***design* weighting model** (`Des2012`) was used to approximate 2011 microcensus on selected sociodemographic variables (gainful activity, vocational position, West/East, Federal state, education, gender, martital status) [@rohrbach-schmidt_bibb/baua_2013: 7].
 
     This universe of cases yielded a response rate of 44.3% with completed interviews [@rohrbach-schmidt_bibb/baua_2013: 6], under-representing middle and lower education levels by 5% each at one point [@gensicke_bibb/baua-erwerbstatigenbefragung_2012: 18].
-    
+
     To counteract this non-response bias, a de-facto **dynamic quota re-sampling** was introduced, and interviews with too highly educated would-be interviewees were aborted during the latter part of the fieldwork.
-    
+
     In addition to the design weights, and the dynamic quota sampling, a **structural weighting model** was produced to further counteract non-response bias (`Gew2012`), using the same reference data and variables as in the above `Des2012`.
-    
+
     Multidimensional weighting models are inherently complex and yet imperfectly understood.
     The combined chosen design and structural weighting are quite substantial here, with an efficiency of 59 (100 would indicate a perfect pre-weighting sample) and a standard deviation of weights of 0.830, and this *in spite* of the aforementioned partial dynamic quota sampling.
-    
+
     All of these limitations and counteractions may interact in complex and unforeseen ways, and, together, give rise to substantial hidden biases, especially on unobserved or latent variables.
-    
+
     Furthermore, the strong reliance on weights causes problems for a few of the multivariate analyses considered in the below.
-    
+
 2. The activities data are quite coarsely scaled with only three levels (`often`, `sometimes` or `never`).
     It may be questionable to treat these as interval-scaled data, and they should perhaps rather be considered ordinal or even nominally-scaled.
-    
+
     As a result, the information-theoretical value of this data is quite limited, and may imply relatively steep cutoffs in parallel analyses in the below: with such few levels, depending on the mode of analyses, some observed pattern may well be indistinguishable from random chance.
-    
+
 3. The activities data are each surveyed *independently* and as a *normative*, not *ipsative* measure.
     We cannot, stricly speaking, infer from the data how much of their given work time participants spent on each of these activities, *relatively*.
     The existing data are emphatically *not* work-diary entries, that would give us a clear view on how respondents spent their work time.
-    
+
     For example, it is conceivable that a participant rates, say, `repair` work as `often`, and all other work as `none`, because repair work is in fact *all* that she does in her work time.
     Another respondent may also rate `repair` work as `often`, but *also* `meas`uring work, because she does both for about half of her time.
-    
+
     In such a simple case, where we assume the activies (and reports thereof) to be mutually exclusive, we *may*, if crudely so, impute diary-type records by simply scaling *all* the rated activities per person to their known total number of work hours.
-    
+
     However, such an imputation fails, if the activities are not all mutually exclusive.
     This is evidently the case for the the computer-related activies `F318` and `F319`, which refer to *tools* with which *many* of the othr activities may be conducted:
     For example, one may gather `info`rmation, *by* using a computer (`F318`).
     We have, for this reason, excluded this activity from the following analysis.
-    
+
     Unfortunately, a similar, non-mutually exclusive relationship is conceivable for other activities as well.
     For example, a worker may respond `often` to *both* `monit`oring *and* `repair*, because the two activities often or always overlap.
-    
+
     The more the activies may overlap in the workplace or recollection of the respondent, the less we can consider this data as ipsative, diary-type measurements, which strictly limits the type of analysis possible.
-    
+
     There is, moreover, no apparent way to test to what degree activities *are* considered to be mutually exclusive or not by respondents, so any methodological decision will entail a substantial risk of garbage-in-garbage-out (GIGA).
-    
+
     An explicitly ipsative survey form, where respondents had *ranked* the activities, or even allocated a time budget to the separate activities would be vastly more useful for our purposes, and more unambiguous in its appropriate use (see [this issue](https://github.com/QWrks/worktypes/issues/3)).
-    
+
 4. The longitudinal design of the BIBB/BAuA surveys strictly limits our ability to investigate any trends in activities, because we cannot match individual respondents (see [this issue](https://github.com/QWrks/worktypes/issues/4)).
-As a stopgap, we can only try to match units at the macro level, such as industries or regions, though this would strictly speaking constitute an ecological fallacy, and may be further beset by changing sector compositions and definitions over the span of the BIBB/BAuA survey waves (see [this issue](https://github.com/QWrks/worktypes/issues/5)). 
-    
+As a stopgap, we can only try to match units at the macro level, such as industries or regions, though this would strictly speaking constitute an ecological fallacy, and may be further beset by changing sector compositions and definitions over the span of the BIBB/BAuA survey waves (see [this issue](https://github.com/QWrks/worktypes/issues/5)).
+
 5. The BIBB/BAuA data, by definition, over cover workplace activities, and not unpaid or informal work.
-    
+
     Some of the above-hypothesized Marxist typology of activities often take place as informal or unpaid work, such as the reproduction of use values in raising a child, or caring for the elderly.
     By contrast, the production of exchange values, by definition, almost exclusively happens in the context of the formal economy, because otherwise, property rights to those very exchange values could not be instituted (see [this issue](https://github.com/QWrks/worktypes/issues/9)).
-    
+
     There is, therefore, a mismatch between the BIBB/BAuA data and the typology it is supposed to test.
     As long as we limit our research question to *relative changes in emphasis* between the cells of this marxist typology in the workplace, this need not be a problem: reproduction of use values, for example, may be generally underrepresented in the workplace, but *changes* should still be detectible.
-    
+
     However, an additional problem may arise as, for example, more reproduction of use values is transferred from unpaid and informal work, to formal work, as appears to be the case in the extension of child care.
     Such a transfer into the formal economy would increase the relative share of this marxist category, and may thereby mask other underlying changes in the economy.
-    
+
     For example, the influx of (paid, formal!) work hours in recently extended child care may partially mask in the relative activity data a trend to more exchange-value oriented activities *all other things equal*.
-    
+
     In short, the problem with workplace activity data is that all other things tend emphatically *not* to be equal, as the boundaries over what is, and is not formal and paid work tend to shift over time, especially the long periods of time covered by BIBB/BAuA.
+
 
 
 ## Descriptives
@@ -249,13 +250,13 @@ freqs <- gather(data = act, key = "activity", value = "frequency", manuf:clean)
 freqs <- group_by(.data = freqs, activity, frequency)
 freqs <- summarize(.data = freqs, count = n(), wcount = sum(weight))
 freqs <- mutate(.data = freqs,
-                raw = count/sum(count), 
+                raw = count/sum(count),
                 weighted = wcount/sum(wcount))
-freqs <- gather(data = freqs, 
-                raw, 
-                weighted, 
-                -activity, 
-                -frequency, 
+freqs <- gather(data = freqs,
+                raw,
+                weighted,
+                -activity,
+                -frequency,
                 key = weighting,
                 value = percentage)
 # reinstate factors (killed by above)
@@ -286,7 +287,7 @@ if (!(pensieve:::assert_n_infer_use_js())) {
 Figure \@ref(fig:freqs) plots the raw and weighted counts of reported frequencies across the reported work activities.
 The activities have a fairly wide spread; giving `advice` is done often by more than half of the respondents, while `manuf`acturing is quite rare.
 The overall reported frequencies sum up to *much* more than 100 percent, which raises the possibility that participants did not consider the activities to be mutually exclusive.
-It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities, which may 
+It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities, which may
 
 ```{r freq-hours, fig.cap="Reported Working Hours (Unweighted)"}
 g <- ggplot(data = act, mapping = aes(x = hours)) + geom_histogram(na.rm = TRUE, bins = 30)
@@ -299,12 +300,56 @@ if (pensieve:::assert_n_infer_use_js()) {
 
 Figure \@ref(fig:freq-hours) displays the distribution of reported working hours, which we will be using in some of the below calculations.
 
-  
+
 ## Possible Analytical Approaches
 
-There are number of methodological 
+To match the activity data from BIBB/BAuA to the hypothesized Marxist typology of labor, we must first test whether there are, in fact, any patterns in the reported activity, and if so, what those pattern are, and how well they might correspond to our theoretical assumptions.
 
-In our preliminary operationalisation of the concept, we assume that the the cells in table \@ref(tab:examples) map onto particular "jobs", including, in principle, unpaid and informal jobs.
+This data reduction can be accomplished in a number of ways, and we must first choose among the possible analytical approaches those which best correspond to the data and our research question.
+
+
+### Unit of Analysis
+
+We here preliminarily assume an *individual* unit of analysis, with any pattern or change in activities measured at the level of individual jobs or respondents.
+This offers the greatest resolution, but because BIBB/BAuA is a longitudinal, not a panel survey, we cannot match or compare individuals between the waves, which will complicate any comparisons over time.
+Using a higher-level unit of analysis might help us match sectors or industries between survey waves, and more clearly identify trends, though such aggregation may cause its own problems (see [this issue](https://github.com/QWrks/worktypes/issues/5)).
+
+
+### Mode of Analysis (Q vs R)
+
+Independent of the *unit* of analysis, we can also choose a *mode* of analysis.  [^alphabet-soup]
+
+[^alphabet-soup]: The terminology is taken from @Thompson-2004 [82].
+
+*R-technique* (or R-mode) refers to an analysis where participants (here, loosely, job holders) constitute the rows, and variables (here, loosely, job characteristics) constitute the columns.
+By contrast, in *Q-technique*, rows are populated by variables, and columns by participants.
+This approach is also known, more informatively, as *inverted factor analysis*, because, relative to R-technique, the rows and columns in the data matrix are being *transposed* prior to analysis.
+
+To illustrate the difference between these two modes, consider an analysis of the lengths of different body parts of different mammals (example taken from @Brown1980).
+In R-mode, the animals are the observations-rows in the data matrix, and the body parts are the variable-columns, with lengths entered in, say, centimeters, in the cells.
+R-analysis then reveals common patterns among the body part lengths, *across* the animals.
+For example, across all mammals, legs and arms are probably more similar in length, than legs and fingers.
+In Q-mode, the data matrix is transposed, with animals as the variable-columns and body parts as the observation-rows.
+Q-analysis then reveals common patterns among the animals, *across* their body parts.
+For example, the body part measurements of two elephants will be more similar, then the body part lengths of a giraffe.
+Q-mode, in, other words, yields something akin to *species factors*.
+
+While Q and R-mode are starkly different analytically, they can be trivially similar mathematically.
+At least when relying on simple procedures such as Principal Components Analysis, Q- or R-mode are merely semantical differences.
+The data matrix is always linearly decomposed into two smaller matrices, with one giving the association between factors and observations (the "scores"), and one giving the association between the factors and the variables (the "loadings").
+The matrix conventionall called scores in R-mode, is called loadings in Q-mode, and vice versa.
+In terms of the mathematics, Q- and R-mode only differ substantially, when automatic rotation procedures are being used, as is frequently the case to make the factors (or components) more readily interpretable.
+Using the above example, R-mode rotation would target the decomposed matrix giving factors and body parts, while in Q-mode, rotation would target the matrix giving factors and animals.
+In R, we would rotate to render interpretable the patterns among the body parts, and in Q-mode the patterns among the animals.
+In such a simplified example, R- and Q-mode appears simply as alternative ways of *looking* at *the same* patterns, presented with a different focus.
+
+
+
+
+
+
+
+In our preliminary operationalisation of the concept, we assume that the the cells in table \@ref(tab:examples) map onto particular "jobs", including, in principle, unpaid and informal work, though the latter
 Many jobs will likely feature *several* of the above types of labor, such as when an engineer is also involved with marketing aspects of the final product.
 However, it seems plausible to assume that at the *individual level*, in all but the smallest organisations, some inter-personal division of labor will demarkate distinct roles along this categorisation, with one *dominant* perspective. [^functional-org]
 
@@ -318,7 +363,7 @@ Alternatively, the above categorisation of labor could also be operationalised d
 
 Instead of our chosen *individual* approach, with discrete *jobs*, one may choose a *collective unit of analysis*, such as perhaps organisations or entire sectors of the economy, to answer the same question.
 
-We here follow a *Q-technique analysis* [^alphabet-soup] of job characteristics, where *jobs* constitute the *columns*, and characteristics (or their manifest proxies) constitute the *rows* of our would-be data.
+We here follow a *Q-technique analysis* of job characteristics, where *jobs* constitute the *columns*, and characteristics (or their manifest proxies) constitute the *rows* of our would-be data.
 We are, in other words, investigating whether *jobs cluster (or covary) across job characteristics*, that is, whether some jobs are similar *as measured by these characteristics*.
 Instead, we could also transpose the data matrix before analysis, and apply the more familiar *R-technique*.
 In this case, we would be looking for *clustered job characteristics across jobs*, that is, whether some characteristics co-occured on some surveyed jobs.
@@ -328,21 +373,20 @@ Under *R-technique*, the same differences and changes would be rendered as diffe
 
 , we could transpose the data matrix before the analysis.
 By such a --- more familiar --- *R-technique*, we would be
-
 This is meangingful for the kind of measurement.
 
-[^alphabet-soup]: The terminology is taken from @Thompson-2004 [82].
-*R-Technique* refers to an analysis where participants (here, loosely, job holders) constitute the rows, and variables (here, loosely, job characteristics) constitute the columns.
-    By contrast, in *Q-Technique*, rows are populated by variables, and columns by participants.
-    This approach is also known, more informatively, as *inverted factor analysis*, though the data matrix is actually simply being *transposed*.
-
     Though this terminology originally applies to techniques of *factor* analysis, we here use it more broadly to describe analytical approaches, including other algorithms.
-
-
-
 
 
 The purpose of this analysis is to find out, whether --- and *how* --- different jobs can be clustered by the frequency of selected tasks performed as part of these jobs.
 In particular, we hypothesize that jobs fall into one of the below four categories:
 
 TODO it is also possible that actually, these different clusters exist WITHIN jobs, and the balance shifts within jobs
+
+### Ipsative vs Normative Measurement
+
+
+### Latent Variable Model vs. Dimensionality Reduction
+
+
+### Clustering vs. Factoring
