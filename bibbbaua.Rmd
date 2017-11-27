@@ -1,6 +1,6 @@
 # BIBB/BAuA
 
-We test this hypothesis using fine-grained data on the work activities performed by 20.036 working-age (>= 15 years) persons employed for more than 10 hours per week from Germany, gathered as part the regular [BIBB/BAuA Employment Survey](https://www.baua.de/DE/Themen/Arbeitswelt-und-Arbeitsschutz-im-Wandel/Arbeitsweltberichterstattung/Arbeitsbedingungen/BIBB-BAuA-2012.html) in 2012 [@hall_bibb/baua_2015; @wittig_grundauswertung_2012].
+We explore this hypothesis using fine-grained data on the work activities performed by 20.036 working-age (>= 15 years) persons employed for more than 10 hours per week from Germany, gathered as part the regular [BIBB/BAuA Employment Survey](https://www.baua.de/DE/Themen/Arbeitswelt-und-Arbeitsschutz-im-Wandel/Arbeitsweltberichterstattung/Arbeitsbedingungen/BIBB-BAuA-2012.html) in 2012 [@hall_bibb/baua_2015; @wittig_grundauswertung_2012].
 Respondents independently rated the below activities in table \@ref(tab:act-vars) as occuring
 *often*, *sometimes* or *never* in their jobs. [^no-computers] [^translation] [^details]
 
@@ -19,7 +19,7 @@ In addition, we created short names for more intuitive handling in the analysis.
 
     The order of response options from `F303` to `F320` was randomized.
 
-    `F321` (logical) allowed for additional, open-ended activities, recorded in `TF321` (string).
+    `F321` (logical) allowed for additional, open-ended activities, recorded in `TF321` (string), but this variable is not publicly available.
 
 ```{r act-vars}
 act_vars <- tibble::tribble(
@@ -158,7 +158,7 @@ It also carries some limitations that are worth keeping in mind for the below an
     Furthermore, the strong reliance on weights causes problems for a few of the multivariate analyses considered in the below.
 
 2. The activities data are quite coarsely scaled with only three levels (`often`, `sometimes` or `never`).
-    It may be questionable to treat these as interval-scaled data, and they should perhaps rather be considered ordinal or even nominally-scaled.
+    It may be questionable to treat these as interval-scaled data, and they should rather be considered ordinal.
 
     As a result, the information-theoretical value of this data is quite limited, and may imply relatively steep cutoffs in parallel analyses in the below: with such few levels, depending on the mode of analyses, some observed pattern may well be indistinguishable from random chance.
 
@@ -186,7 +186,7 @@ It also carries some limitations that are worth keeping in mind for the below an
     An explicitly ipsative survey form, where respondents had *ranked* the activities, or even allocated a time budget to the separate activities would be vastly more useful for our purposes, and more unambiguous in its appropriate use (see [this issue](https://github.com/QWrks/worktypes/issues/3)).
 
 4. The longitudinal design of the BIBB/BAuA surveys strictly limits our ability to investigate any trends in activities, because we cannot match individual respondents (see [this issue](https://github.com/QWrks/worktypes/issues/4)).
-As a stopgap, we can only try to match units at the macro level, such as industries or regions, though this would strictly speaking constitute an ecological fallacy, and may be further beset by changing sector compositions and definitions over the span of the BIBB/BAuA survey waves (see [this issue](https://github.com/QWrks/worktypes/issues/5)).
+    As a stopgap, we can only try to match units at the macro level, such as industries or regions, though this would strictly speaking constitute an ecological fallacy, and may be further beset by changing sector compositions and definitions over the span of the BIBB/BAuA survey waves (see [this issue](https://github.com/QWrks/worktypes/issues/5)).
 
 5. The BIBB/BAuA data, by definition, over cover workplace activities, and not unpaid or informal work.
 
@@ -301,11 +301,11 @@ if (pensieve:::assert_n_infer_use_js()) {
 Figure \@ref(fig:freq-hours) displays the distribution of reported working hours, which we will be using in some of the below calculations.
 
 
-## Possible Analytical Approaches
+## Analytical Decisions
 
 To match the activity data from BIBB/BAuA to the hypothesized Marxist typology of labor, we must first test whether there are, in fact, any patterns in the reported activity, and if so, what those pattern are, and how well they might correspond to our theoretical assumptions.
 
-This data reduction can be accomplished in a number of ways, and we must first choose among the possible analytical approaches those which best correspond to the data and our research question.
+There are a (large) number of ways to accomplish such a data reduction, and to choose the appropriate approach for the research question and data at hand, we must first work through a list of decision criteria.
 
 
 ### Unit of Analysis
@@ -315,78 +315,162 @@ This offers the greatest resolution, but because BIBB/BAuA is a longitudinal, no
 Using a higher-level unit of analysis might help us match sectors or industries between survey waves, and more clearly identify trends, though such aggregation may cause its own problems (see [this issue](https://github.com/QWrks/worktypes/issues/5)).
 
 
+### Ordinal vs. Interval/Ratio Scale of Measurement
+
+As discussed in the above, the activity ratings `never`, `sometimes` and `often` are **ordinally** scaled, not intervally scaled, dramatically limiting the appropriate statistical procedures.
+However, the *latent concept* beind this rather crude measure is clearly interval (even ratio-scaled) in nature: how much time you spend on any given activity exists as an objective reality, and respondents will have substantial experience reporting these times in ratio form ("This task will take about 30 minutes" or "I spent 4 hours doing this").
+We may even assume that respondents held approximate, but ratio-scaled representations of their workday activity schedules, but *binned* these to respond to the BIBB/BAuA questionnaire.
+
+Fortunately, there exists a statistical procedure to *deduce* -- as far as possible -- the underlying ratio-scaled latent variable behind their ordinal manifestations.
+Polychoric correlations do this by estimating correlation coefficients based on deduced underlying, normally-distributed ratio-scaled variables.
+The resulting correlation (or covariance) matrices are then amenable to ordinary factor analyses or PCA, opening up a familar and frequently used set of statistical tools.
+
+There also exist approaches that "natively" support ordinal (and categorical) data, including item response theory (IRT, and other structural equation modeling), polynomial or nonlinear techniques of dimensionality reduction, though these are far more complex and less well understood (see [this issue](https://github.com/QWrks/worktypes/issues/11)).
+
+
+### Latent Variable Model vs. Dimensionality Reduction
+
+Our present research question assumes that there are structural forces in advanced capitalism that give rise to particular patterns of work activities, such as the above-hypothesized Marxist of labor.
+We have, therefore, subscribed to a latent variable model of our data, where the BIBB/BAuA-variables are merely *manifestations* of underlying *latent* concepts, such as, for instance, the share of reproductive activities.
+
+This need not imply a hypothetico-deductive approach, but is also compatible with the exploratory stage of our present work:
+We may not know precisely *what* the latent concepts are, but we assume ex-ante that there *are* such latent patterns in the data.
+
+A latent variable model, and the factor analytic implementations which are here relevant, conceive of individual records (be they cases or variables) as the manifest product of the latent variables *and* an ideosyncratic error term (or its inverse, the communality).
+All latent variable procedures seek to minimize this error term, but allow that some records cannot be fully explained by the resulting model.
+
+This is a fitting procedure for our research question:
+it seems plausible that in addition to the structural forces of interest, that there will be individual and ideosyncratic patterns of work activities, which need not concern us.
+
+A latent variable model stands in contrast with approaches for simple dimensionality reduction, such as PCA, where *no* error is allowed, but *all* of the variance must be explained, as far as possible.
+While such a a more stringent approach is ultimately inadequate for our research question, we may still resort to simple dimensionality reduction, which is often more robust and easier to carry out.
+
+
+### Segmentation vs. Factoring
+
+Cluster analyses is a family of algorithms to *segment* cases (or variables) into discrete groups, whereas factor analysis *factorises* cases (or variables) so that their (common) variance can be explained using fewer, continuous variables.
+Consequently, a cluster analysis is warranted when the latent phenomenon is assumed to be categorical, as, for example, biological species.
+By contrast, a continous latent construct, such as "extroversion", may be better analysed using factor analysis.
+
+While the above-hypothesized typology is *categorical*, we have no reason to assume that jobs would fall into clear-cut, dichotomous patterns of work activities.
+The typology is one of ideal types, easily presented in categorical form, but this does not imply that ontologically, *only* such ideal types would exist.
+Indeed, it seems more plausible that any given actual job might be a continuous mixture of these ideal-types, and a factor analytic approach is therefore more appropriate to our research question.
+
+While it is often erroneously assumed, that cluster analysis is suitable (only) for grouping cases, and factor analysis (only) for grouping variables, but while this is often the case, it need not be so.
+We can segment or factorise both cases *and* variables.
+
+Cluster analyses can also appear to more readily highlight authentic and representative cases (or variables), without the need for factor rotation and scoring, but this is also a misunderstanding.
+Clustering, per se, is *not* a well-defined goal, and the (vast) choice of concrete clustering algorithms imply quite different criteria what it means to "cluster", raising similar -- if more opaque -- problems as factor rotation.
+
+
 ### Mode of Analysis (Q vs R)
 
 Independent of the *unit* of analysis, we can also choose a *mode* of analysis.  [^alphabet-soup]
 
 [^alphabet-soup]: The terminology is taken from @Thompson-2004 [82].
 
-*R-technique* (or R-mode) refers to an analysis where participants (here, loosely, job holders) constitute the rows, and variables (here, loosely, job characteristics) constitute the columns.
+*R-technique* (or R-mode) refers to an analysis where participants (here, loosely, job holders) constitute the rows, and variables (here, loosely, ordinal frequency of work activities) constitute the columns.
 By contrast, in *Q-technique*, rows are populated by variables, and columns by participants.
 This approach is also known, more informatively, as *inverted factor analysis*, because, relative to R-technique, the rows and columns in the data matrix are being *transposed* prior to analysis.
 
-To illustrate the difference between these two modes, consider an analysis of the lengths of different body parts of different mammals (example taken from @Brown1980).
+To illustrate the difference between these two modes, consider an analysis of the lengths of different body parts of different mammals (example taken from @Brown1980: 13).
 In R-mode, the animals are the observations-rows in the data matrix, and the body parts are the variable-columns, with lengths entered in, say, centimeters, in the cells.
-R-analysis then reveals common patterns among the body part lengths, *across* the animals.
-For example, across all mammals, legs and arms are probably more similar in length, than legs and fingers.
+R-analysis then reveals common patterns among the body part lengths, *across* the animals. [^stand-r]
+For example, across all mammals, leg and arm lengths probably covary more strongly (because they need to be approximately the same length for four-legged mammals) than leg length and torso length.
+R-mode, in other words, yields the dominant dimensions across which mammals *differ*, such as
 In Q-mode, the data matrix is transposed, with animals as the variable-columns and body parts as the observation-rows.
 Q-analysis then reveals common patterns among the animals, *across* their body parts.
-For example, the body part measurements of two elephants will be more similar, then the body part lengths of a giraffe.
-Q-mode, in, other words, yields something akin to *species factors*.
+For example, the body part measurements of a gorilla and a human will be more similar, than the body part lengths of a giraffe. [^stand-q]
+Q-mode, in, other words, yields *species or gestalt factors*, such as "ape-like" and "giraffe-like"
 
-While Q and R-mode are starkly different analytically, they can be trivially similar mathematically.
-At least when relying on simple procedures such as Principal Components Analysis, Q- or R-mode are merely semantical differences.
-The data matrix is always linearly decomposed into two smaller matrices, with one giving the association between factors and observations (the "scores"), and one giving the association between the factors and the variables (the "loadings").
-The matrix conventionall called scores in R-mode, is called loadings in Q-mode, and vice versa.
-In terms of the mathematics, Q- and R-mode only differ substantially, when automatic rotation procedures are being used, as is frequently the case to make the factors (or components) more readily interpretable.
+[^stand-r]: Notice that because the body part lengths (in columns) are centered (for covariance-based analyses) and standardized (for correlation-based analyses), it is *not* the absolute similarity in body part lengths that matter, but their covariance *relative* to that body parts mean.
+    For example, eye and mouth diameters need not be more strongly related than leg and arm lengths, even though the former are generally smaller in all mammals.
+    Instead, what matters is whether the *differences* from the across-species eye and mouth diameters covary with, say, the differences from the across-species leg lenths.
+
+[^stand-q]: Here too, columns are centered (and standardized) before factorisation, now *across* body parts.
+    For example, the eye and mouth diamaters, as well as leg lenths of humans, gorillas and giraffes will be re-calculated as differences from the *mean* of all measured body part lengths for that animal.
+    As a result, the difference in overall size between humans, gorillas and giraffes is centered away, and only the *proportions* remain to covary.
+
+While Q and R-mode are starkly different analytically, they are quite similar mathematically.
+At least when relying on simple procedures such as Principal Components Analysis, Q- or R-mode are merely semantic differences.
+The data matrix is always linearly decomposed into two smaller matrices, with one giving the association between factors and rows (the "scores"), and one giving the association between the factors and the columns (the "loadings").
+Thus, the scores matrix in R-mode is the loadings matrix in Q-mode, and vice versa.
+
+In terms of the mathematics, Q- and R-mode only differ substantially, when automatic rotation procedures are being used upon extraction, as is frequently the case to make the factors (or components) more readily interpretable.
 Using the above example, R-mode rotation would target the decomposed matrix giving factors and body parts, while in Q-mode, rotation would target the matrix giving factors and animals.
 In R, we would rotate to render interpretable the patterns among the body parts, and in Q-mode the patterns among the animals.
-In such a simplified example, R- and Q-mode appears simply as alternative ways of *looking* at *the same* patterns, presented with a different focus.
+In such a simplified example, R- and Q-mode are simply alternative ways of *looking* at *the same* patterns, presented with a different focus.
 
+Unfortunately, this convenient equivalence of R- and Q-mode only holds, when the unit of measurement is objectively the same accross all observations and variables (cm for body parts), and centering and standardization are meaningful both by columns *and* by rows.
+Alas, this is seldom the case with real-world datasets in the social sciences, and we must therefore carefully consider whether R- and/or Q-mode analyses are permissible.
 
+Let us first consider an R-mode analysis of the BIBB/BAuA work activity data, with the activities as variable-columns and the respondents as observation-rows.
+Strictly speaking, we cannot assume precise equality of measurement units across rows, because some respondents may generally overestimate the ordinal rating of *all* activities, while others underestimate (with only three levels, spread is less of a concern).
+Such scale response biases are a widespread concern, but cannot easily be avoided in normative measures, and are generally ignored.
+Centering by columns of work activity, as implied by R-mode analysis, is less problematic:
+Recalculating each activity frequency as the difference from its *mean* makes intuitive sense: if almost *everyone* does `some`, say, `org`anising, we are especially interested in those relatively few who do it `never` or `often`, and what other activities covary with their extreme `org`anising.
+Conversely, if an activity is reported very rarely, even a `sometimes` rating, might be quite informative.
 
+While centering around the column means is obligatory, we *can* retain the differences in spread (standard deviation), by relying only on the covariance matrix.
+For example, if there is an activity that is either done `never` or `often` by almost all respondents, but not `sometimes`, retaining this relatively greater spread will give this variable and any resulting covariance a greater impact on the overall factorisation.
+By contrast, activities which have mostly `sometimes` (or any other) rating will have a smaller spread and any related covariances would yield a smaller impact.
 
+Retaining the spread, and relying on covariances, rather than correlations, would, in effect, place greater emphasis on activities which are more *discriminant*, loosely speaking.
+Our research question implies no special emphasis on discriminant activities, such as `manuf`acturing versus more widely-spread activities such as `org`anisation (see \@ref(fig:freqs)).
+In fact, we are especially interested in patterns regarding the miscellaneous activities, such as `train`ing and `marketing`.
+As a result, we will rely on the correlation matrices in the below R-mode analysis.
 
+While an R-mode analysis of the data appears permissible, it will produce a result slightly off the mark of our research question:
+We may learn how activities are related to one another, but this view will not reveal ideal-types of organic, actual existing jobs with reported activies.
+R-mode here, as always, produces *analytical*, as opposed to *holistic* results: we learn which activities covary, *relative* to the mean and spread of the entire sample (of jobs), negating that which describes any *one* such job.
 
+This makes R-mode analysis somewhat ill-suited for our research question, and would appear to make Q-mode a better choice.
 
-In our preliminary operationalisation of the concept, we assume that the the cells in table \@ref(tab:examples) map onto particular "jobs", including, in principle, unpaid and informal work, though the latter
+In our preliminary operationalisation of the above Marxist typology of labor, we assume that the cells in table \@ref(tab:examples) map onto particular "jobs", each of which may, by its distribution of activities, score on these ideal types.
 Many jobs will likely feature *several* of the above types of labor, such as when an engineer is also involved with marketing aspects of the final product.
-However, it seems plausible to assume that at the *individual level*, in all but the smallest organisations, some inter-personal division of labor will demarkate distinct roles along this categorisation, with one *dominant* perspective. [^functional-org]
+However, it seems plausible to assume that at the *individual level*, in all but the smallest organisations, some inter-personal division of labor will demarcate distinct roles along this categorisation, with one *dominant* perspective. [^functional-org]
 
 [^functional-org]: Such inter-personal division of labor by labor type is akin to a functional grouping at the organizational level.
-We assume that even should an organisation adhere to a different structure --- say, an org chart grouped by region or product --- *individual* jobs could still be characterized in our above "functional" terms.
+    We assume that even should an organisation adhere to a different structure --- say, an org chart grouped by region or product --- *individual* jobs could still be characterized in our above "functional" terms.
 
 By this operationalisation, we would expect to find *clusters of jobs* who share yet-to-be-determined characteristics that reflect the above categorisation.
 For example, there should be a group of otherwise potentially dissimilar jobs, which are all concerned with designing, maintaining and enforcing the capitalist mode of production (the south-eastern cell in \@ref(tab:examples)), including, perhaps, lobbying, legal work but also security and defense.
 
-Alternatively, the above categorisation of labor could also be operationalised differently, including a different *unit* or *mode* of analysis.
+In Q-mode *jobs* constitute the *columns*, and characteristics (or their manifest proxies, the activities) constitute the *rows* of our would-be data.
+We are, in other words, investigating whether *jobs covary across job characteristics*, that is, whether some jobs are similar *as measured by these characteristics*.
 
-Instead of our chosen *individual* approach, with discrete *jobs*, one may choose a *collective unit of analysis*, such as perhaps organisations or entire sectors of the economy, to answer the same question.
+By contrast, in R-mode we would be looking for *covarying job characteristics across jobs*, that is, whether some characteristics co-occured on some surveyed jobs.
 
-We here follow a *Q-technique analysis* of job characteristics, where *jobs* constitute the *columns*, and characteristics (or their manifest proxies) constitute the *rows* of our would-be data.
-We are, in other words, investigating whether *jobs cluster (or covary) across job characteristics*, that is, whether some jobs are similar *as measured by these characteristics*.
-Instead, we could also transpose the data matrix before analysis, and apply the more familiar *R-technique*.
-In this case, we would be looking for *clustered job characteristics across jobs*, that is, whether some characteristics co-occured on some surveyed jobs.
-This seemingly semantic distinction, in fact, implies an entirely different phenomenon, especially when compared cross-sectionally or over time.
-Under *Q-technique*, we would render differences and changes in labor patterns as differences and changes *between* jobs: For example, a the north-east cell type job from table \@ref(tab:examples) may become more, or less prevalent.
-Under *R-technique*, the same differences and changes would be rendered as differences and changes *within* jobs: For example, some
+There is an extreme, hypothetical scenario in which R- and Q-mode would yield substantially similar results:
+when *all* activities highly load on one of a few factors each.
+This would imply that jobs are completely distinct, with no overlap in activities.
+In this scenario, R-mode would yield these jobs as a few, highly loading factors, and Q would reveal them as completely different jobs, each scoring highly (or not at all) on all the variables.
 
-, we could transpose the data matrix before the analysis.
-By such a --- more familiar --- *R-technique*, we would be
-This is meangingful for the kind of measurement.
+This is, alas, an unlikely scenario, and one out of sync with our research question.
+If there are, in fact, latent, Marxist ideal-types of labor in late capitalism, these are likely to be quite muddied, and they are likely to be superseded by higher-loading other factors.
+The answer to our research question, in other words, is to be found in the nuances of covarying jobs.
 
-    Though this terminology originally applies to techniques of *factor* analysis, we here use it more broadly to describe analytical approaches, including other algorithms.
+More tentatively, we would also assume that *if* there is a large shift of Marxist labor under way, we would expect this shift to occur *within* jobs, rather than for it to materialize as an entirely, entirely distinct class of jobs.
+
+Analysing the BIBB/BAuA-activity data in Q-mode is, alas, problematic.
+To center an R-mode observation-column of all respondents over all their respective activities, would effectively treat the *normative* activity data as *ipsative* diary entries.
+After centering, *all* respondents would have the same total sum of hours worked, distributed proportionally over their `sometimes` and `often` activities. [^zero-hours]
+For example, someone who only reported `often` for `manuf`acturing, and `none` for all other 15 activities would receive a `.9375` for `manuf`acturing, and a `-.0625` for all others, summing to `0`.
+By contrast, a participant who reported `often` for eight categories, and `none` for the remaining 8, would receive `.5` for often-rated activies, and `-.5` for none. [^weight-by-hours]
+
+[^zero-hours]: The actual mean per column would, by definition, be zero, with some entries in the negative, which seems counterintuitive for "hours worked".
+    However, this is merely a linear shift, and would not cause any problems.
+
+[^weight-by-hours]: In both Q- and R-mode, in addition to the study weight, records could also be weighted by their reported hours.
+    Based on the relative wide spread in working hours in figure \@ref(fig:freq-hours), this would change the focus of our analysis considerably; instead of jobs, we would be studying work hours done in the economy.
+
+Such differences in means are not a theoretical concern.
 
 
-The purpose of this analysis is to find out, whether --- and *how* --- different jobs can be clustered by the frequency of selected tasks performed as part of these jobs.
-In particular, we hypothesize that jobs fall into one of the below four categories:
-
-TODO it is also possible that actually, these different clusters exist WITHIN jobs, and the balance shifts within jobs
-
-### Ipsative vs Normative Measurement
 
 
-### Latent Variable Model vs. Dimensionality Reduction
+### Ipsative vs. Normative Measurement (Input Data)
 
 
-### Clustering vs. Factoring
+
+### Centering and Standardization
