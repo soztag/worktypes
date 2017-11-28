@@ -759,3 +759,5 @@ This relatively small retention may be a result of the underlying low informatio
 
 
 ### CFA results
+
+(skipped for now, because results will likely be *very* similar to PCA results.)

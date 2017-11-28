@@ -10,7 +10,7 @@ cache:
 addons:
   apt:
     packages:
-      - libxml2-dev
+      - libgsl0ldbl
 
 script:
   - Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
