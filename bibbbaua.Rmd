@@ -177,7 +177,7 @@ It also carries some limitations that are worth keeping in mind for the below an
     We have, for this reason, excluded this activity from the following analysis.
 
     Unfortunately, a similar, non-mutually exclusive relationship is conceivable for other activities as well.
-    For example, a worker may respond `often` to *both* `monit`oring *and* `repair*, because the two activities often or always overlap.
+    For example, a worker may respond `often` to *both* `monitoring` *and* `repair`*, because the two activities often or always overlap.
 
     The more the activies may overlap in the workplace or recollection of the respondent, the less we can consider this data as ipsative, diary-type measurements, which strictly limits the type of analysis possible.
 
@@ -344,7 +344,7 @@ This is a fitting procedure for our research question:
 it seems plausible that in addition to the structural forces of interest, that there will be individual and ideosyncratic patterns of work activities, which need not concern us.
 
 A latent variable model stands in contrast with approaches for simple dimensionality reduction, such as PCA, where *no* error is allowed, but *all* of the variance must be explained, as far as possible.
-While such a a more stringent approach is ultimately inadequate for our research question, we may still resort to simple dimensionality reduction, which is often more robust and easier to carry out.
+While such a more stringent approach is ultimately inadequate for our research question, we may still resort to simple dimensionality reduction, which is often more robust and easier to carry out.
 
 
 ### Segmentation vs. Factoring
@@ -461,7 +461,7 @@ By contrast, a participant who reported `often` for eight categories, and `none`
 
 [^polychor-q]: Using the aforementioned polychoric correlations would infer the underlying interval-scaled data in a more sophisticated way, as described in the above.
     The implications would remain the same.
-
+<!-- TODO MH: Plot overflow -->
 ```{r centered-activities, fig.cap="Centered Activities"}
 diaries <- as.matrix(act[,1:16])
 diaries[,] <- NA
@@ -538,7 +538,7 @@ This appears counterintuitive, but is necessary to calculate covariances:
 Respondents are similar, when they share actitivies with extreme positive or negative values.
 
 After centering only, those participants with greatly spread values may have an outsized effect on the resulting factors.
-
+<!-- TODO MH: Plot overflow -->
 ```{r scaled-activities, fig.cap="Standardized Activities"}
 g <- ggplot(data = diaries_sample, mapping = aes(
   x = respondent,
