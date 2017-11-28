@@ -1,6 +1,6 @@
 # BIBB/BAuA
 
-We explore this hypothesis using fine-grained data on the work activities performed by 20.036 working-age (>= 15 years) persons employed for more than 10 hours per week from Germany, gathered as part the regular [BIBB/BAuA Employment Survey](https://www.baua.de/DE/Themen/Arbeitswelt-und-Arbeitsschutz-im-Wandel/Arbeitsweltberichterstattung/Arbeitsbedingungen/BIBB-BAuA-2012.html) in 2012 [@hall_bibb/baua_2015; @wittig_grundauswertung_2012].
+We explore this hypothesis using fine-grained data on the work activities performed by 20.036 working-age (>= 15 years) persons employed for more than 10 hours per week from Germany, gathered as part the regular [BIBB/BAuA Employment Survey](https://www.baua.de/DE/Themen/Arbeitswelt-und-Arbeitsschutz-im-Wandel/Arbeitsweltberichterstattung/Arbeitsbedingungen/BIBB-BAuA-2012.html) in 2012 [@hall_bibb/baua_2015; @wittig_2012_Grundauswertung].
 Respondents independently rated the below activities in table \@ref(tab:act-vars) as occuring
 *often*, *sometimes* or *never* in their jobs. [^no-computers] [^translation] [^details]
 
@@ -8,7 +8,7 @@ Respondents independently rated the below activities in table \@ref(tab:act-vars
 We do not include these in our analysis, because they are oddly unspecific and refer to the *tool* used, rather than the *type* of work conducted.
 These are *orthogonal* to the other activities; you may, for example, *provide advice and information* (`F314`) *by* writing an email.
 
-[^translation]: The english translation of items is from @rohrbach-schmidt_bibb/baua_2013: 28f, the german original and id are from @hall_bibb/baua-erwerbstatigenbefragung_2011.
+[^translation]: The english translation of items is from @rohrbach-schmidt_bibb/baua_2013: 28f, the german original and id are from @hall_2011_BIBB/BAuA-Erwerbstatigenbefragung2011/2012.
 In addition, we created short names for more intuitive handling in the analysis.
 
 [^details]: The full german wording of the interviewer prompt reads:
@@ -139,12 +139,12 @@ It also carries some limitations that are worth keeping in mind for the below an
 1. The survey may carry substantial (hidden) bias.
 
     The universe of cases are members of *private* households with *answered landline phones* only (for random-digit dialing) [@rohrbach-schmidt_bibb/baua_2013: 5].
-    **Employees without landline phones**, estimated to be 11% already in 2008 [as cited in @gensicke_bibb/baua-erwerbstatigenbefragung_2012: 12] are not part of the sampling universe, and thus not even included in the response rate.
+    **Employees without landline phones**, estimated to be 11% already in 2008 [as cited in @gensicke__BIBB/BAuA-Erwerbstatigenbefragung2011/2012: 12] are not part of the sampling universe, and thus not even included in the response rate.
     It is hard to even estimate the bias that might result from this design choice, but the polling firm conducting BIBB/BAuA 2012 suggests that mobile-only persons have lower income and education, and are more likely to be marginally employed and live in east Germany.
 
     A ***design* weighting model** (`Des2012`) was used to approximate 2011 microcensus on selected sociodemographic variables (gainful activity, vocational position, West/East, Federal state, education, gender, martital status) [@rohrbach-schmidt_bibb/baua_2013: 7].
 
-    This universe of cases yielded a response rate of 44.3% with completed interviews [@rohrbach-schmidt_bibb/baua_2013: 6], under-representing middle and lower education levels by 5% each at one point [@gensicke_bibb/baua-erwerbstatigenbefragung_2012: 18].
+    This universe of cases yielded a response rate of 44.3% with completed interviews [@rohrbach-schmidt_bibb/baua_2013: 6], under-representing middle and lower education levels by 5% each at one point [@gensicke__BIBB/BAuA-Erwerbstatigenbefragung2011/2012: 18].
 
     To counteract this non-response bias, a de-facto **dynamic quota re-sampling** was introduced, and interviews with too highly educated would-be interviewees were aborted during the latter part of the fieldwork.
 
@@ -755,9 +755,31 @@ This relatively small retention may be a result of the underlying low informatio
 
 ### PCA results
 
+```{r pcares, include = FALSE, eval = FALSE}
+pcarot <- psych::principal(r = polies$correlations,
+                           nfactors = 2,
+                           residuals = FALSE,
+                           rotate = "varimax")
+pcarot <- pcaPA::PA(dataMatrix = as.data.frame(act[,1:16]),
+                    )
+FactoMineR::PCA()
+factoextra::fviz_pca_biplot(pcarot)
+```
 
 
 
 ### CFA results
+
+```{r fares, include = FALSE, eval = FALSE}
+fares <- psych::fa(r = as.data.frame(act[,1:16]),
+                   nfactors = 2,
+                   rotate = "varimax",
+                   scores = "regression",
+                   covar = FALSE,
+                   missing = TRUE,
+                   impute = "median",
+                   cor = "poly")
+```
+
 
 (skipped for now, because results will likely be *very* similar to PCA results.)
