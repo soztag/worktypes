@@ -246,7 +246,7 @@ act <- readRDS(file = "act.rds")
 
 Let us first consider the weighted and unweighted frequencies of the different activities.
 
-```{r freqs, fig.cap="Raw and Weighted Frequencies of Work Activities"}
+```{r freqs, fig.cap="Raw and Weighted Frequencies of Work Activities", include=FALSE}
 freqs <- gather(data = act, key = "activity", value = "frequency", manuf:clean)
 freqs <- group_by(.data = freqs, activity, frequency)
 freqs <- summarize(.data = freqs, count = n(), wcount = sum(weight))
@@ -290,7 +290,7 @@ The activities have a fairly wide spread; giving `advice` is done often by more 
 The overall reported frequencies sum up to *much* more than 100 percent, which raises the possibility that participants did not consider the activities to be mutually exclusive.
 It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities, which may
 
-```{r freq-hours, fig.cap="Reported Working Hours (Unweighted)"}
+```{r freq-hours, fig.cap="Reported Working Hours (Unweighted)", include=FALSE}
 g <- ggplot(data = act, mapping = aes(x = hours)) + geom_histogram(na.rm = TRUE, bins = 30)
 if (pensieve:::assert_n_infer_use_js()) {
   ggplotly(g)
