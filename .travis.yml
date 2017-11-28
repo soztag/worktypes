@@ -33,3 +33,4 @@ notifications:
 
 after_failure:
   - cat worktypes.log
+  - cat worktypes.tex
