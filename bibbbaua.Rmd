@@ -235,6 +235,7 @@ act$weight <- bba$Gew2012
 
 # add weekly hours
 act$hours <- as.integer(bba$AZ)
+act$respondent <- as.character(bba$Intnr)
 saveRDS(object = act, file = "act.rds")
 ```
 
@@ -453,24 +454,187 @@ The answer to our research question, in other words, is to be found in the nuanc
 More tentatively, we would also assume that *if* there is a large shift of Marxist labor under way, we would expect this shift to occur *within* jobs, rather than for it to materialize as an entirely, entirely distinct class of jobs.
 
 Analysing the BIBB/BAuA-activity data in Q-mode is, alas, problematic.
-To center an R-mode observation-column of all respondents over all their respective activities, would effectively treat the *normative* activity data as *ipsative* diary entries.
-After centering, *all* respondents would have the same total sum of hours worked, distributed proportionally over their `sometimes` and `often` activities. [^zero-hours]
+The problems begin with centering the Q-mode observation-column of all respondents over all their respective activities.
+After centering, *all* respondents would have the same *net* activity ratings, distributed proportionally over their `sometimes` (say, `= 1`) and `often` (`= 2`) activities. [^polychor-q]
 For example, someone who only reported `often` for `manuf`acturing, and `none` for all other 15 activities would receive a `.9375` for `manuf`acturing, and a `-.0625` for all others, summing to `0`.
-By contrast, a participant who reported `often` for eight categories, and `none` for the remaining 8, would receive `.5` for often-rated activies, and `-.5` for none. [^weight-by-hours]
+By contrast, a participant who reported `often` for eight categories, and `none` for the remaining 8, would receive `.5` for often-rated activies, and `-.5` for none.
 
-[^zero-hours]: The actual mean per column would, by definition, be zero, with some entries in the negative, which seems counterintuitive for "hours worked".
-    However, this is merely a linear shift, and would not cause any problems.
+[^polychor-q]: Using the aforementioned polychoric correlations would infer the underlying interval-scaled data in a more sophisticated way, as described in the above.
+    The implications would remain the same.
+
+```{r centered-activities, fig.cap="Centered Activities"}
+diaries <- as.matrix(act[,1:16])
+diaries[,] <- NA
+storage.mode(diaries) <- "numeric"
+diaries_12 <- diaries
+for (i in 1:nrow(act)) {
+  thiscase <- unlist(act[i,1:16])
+  thiscase <- as.character(thiscase)
+  thisfreq <- table(thiscase)
+  never <- 0
+  atalls <- as.integer(thisfreq["sometimes"] + (thisfreq["often"] * 2))
+  sometimes <- 1/atalls
+  often <- 2/atalls
+  
+  for (p in 1:length(thiscase)) {
+    diaries[i,p] <- switch(EXPR = as.character(thiscase[p]),
+                           "often" = often,
+                           "sometimes" = sometimes,
+                           "never" = never,
+                           `NA` = NA)
+    diaries_12[i,p] <- switch(EXPR = as.character(thiscase[p]),
+                           "often" = 2,
+                           "sometimes" = 1,
+                           "never" = 0,
+                           `NA` = NA)
+  }
+}
+diaries <- cbind(
+  as.tibble(diaries),
+  act[ ,17:19])
+
+diaries_long <- gather(data = diaries, key = "activity", value = "percent", manuf:clean)
+diaries_long$raw <- gather(
+  data = as.tibble(diaries_12), 
+  key = "activity", 
+  value = "raw")$raw
+
+diaries_long <- group_by(.data = diaries_long,
+                         respondent)
+diaries_long <- mutate(
+  .data = diaries_long,
+  centered = raw - mean(raw, na.rm = TRUE),
+  scaled = scale(x = raw, center = TRUE, scale = TRUE))
+
+diaries_sample <- na.omit(object = diaries_long)
+chosen <- as.character(sample(x = diaries_sample$respondent, 
+                              size = 20, 
+                              replace = FALSE, 
+                              prob = diaries_sample$weight))
+diaries_sample <- dplyr::filter(.data = diaries_sample,
+                                respondent %in% chosen)
+
+g <- ggplot(data = diaries_sample, mapping = aes(
+  x = respondent,
+  y = centered,
+  fill = activity))
+g <- g + geom_bar(stat = "identity", position = "dodge")
+g <- g + scale_y_continuous(name = "Centered Activities (Often = 2, Sometimes = 1)")
+g <- g + scale_x_discrete(name = "Selected Respondents (BIBB/BAuA Intnr)")
+g <- g + scale_fill_discrete(name = "Activity")
+g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+if (!(pensieve:::assert_n_infer_use_js())) {
+  plot(g)
+} else {
+  ggplotly(g)
+}
+```
+
+Figure \@ref(fig:centered-activities) illustrates this centering operation for some randomly selected participants.
+Surprisingly, *all* respondents now have values for *all* activities, even those they rated as `never`.
+This is because their activities are now expressed *relative* to their mean of `0`.
+A positive value indicates that a respondent undertakes an activity *more often* than that respondent undertakes an activity *on average*.
+This appears counterintuitive, but is necessary to calculate covariances:
+Respondents are similar, when they share actitivies with extreme positive or negative values.
+
+After centering only, those participants with greatly spread values may have an outsized effect on the resulting factors.
+
+```{r scaled-activities, fig.cap="Standardized Activities"}
+g <- ggplot(data = diaries_sample, mapping = aes(
+  x = respondent,
+  y = scaled,
+  fill = activity))
+g <- g + geom_bar(stat = "identity", position = "dodge")
+g <- g + scale_y_continuous(name = "Centered and Standardized Activities (Often = 2, Sometimes = 1)")
+g <- g + scale_x_discrete(name = "Selected Respondents (BIBB/BAuA Intnr)")
+g <- g + scale_fill_discrete(name = "Activity")
+g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+if (!(pensieve:::assert_n_infer_use_js())) {
+  plot(g)
+} else {
+  ggplotly(g)
+}
+```
+
+Figure \@ref(fig:scaled-activities) gives such scaled data.
+
+The negative values are, in a way, the smallest problem with this scaled data, because they stem from the rather crude treatment of the `never` response.
+
+The greater problem with Q-scaled data, is that the respondents were not aware that their replies would be standardized in this way *across different questions*.
+
+In effect, we would be treating their responses *as if they had* replied to an ipsative instrument, and crudely imputing diaries from normative data.
+
+```{r imputed-diary, fig.cap="Select Imputed Activity Diaries"}
+g <- ggplot(data = diaries_sample, mapping = aes(
+  x = respondent,
+  y = percent * 100,
+  fill = activity))
+g <- g + geom_bar(stat = "identity")
+g <- g + scale_y_continuous(name = "Imputed Percentage of Worktime")
+g <- g + scale_x_discrete(name = "Selected Respondents (BIBB/BAuA Intnr)")
+g <- g + scale_fill_discrete(name = "Activity")
+g <- g + coord_flip()
+if (!(pensieve:::assert_n_infer_use_js())) {
+  plot(g)
+} else {
+  ggplotly(g)
+}
+```
+
+```{r imputed-diary-byhrs, fig.cap="Select Imputed Activity Diaries, Scaled to Weekly Hours"}
+g <- ggplot(data = diaries_sample, mapping = aes(
+  x = respondent,
+  y = percent * hours,
+  fill = activity))
+g <- g + geom_bar(stat = "identity")
+g <- g + scale_y_continuous(name = "Imputed Weekly Hours Spent on Activity")
+g <- g + scale_x_discrete(name = "Selected Respondents (BIBB/BAuA Intnr)")
+g <- g + scale_fill_discrete(name = "Activity")
+g <- g + coord_flip()
+if (!(pensieve:::assert_n_infer_use_js())) {
+  plot(g)
+} else {
+  ggplotly(g)
+}
+```
+
+Figures \@ref(fig:imputed-diary) and \@ref(fig:imputed-diary-byhrs) give such imputed diary entries, scaled to a sum of 100 percent and to their reported weekly working hours respectively.
+
+This presentation of the data looks more palatable, but it carries the same underlying problems of normative data: 
+
+1. We do not know whether understood the response options in the same way.
+    On the one hand, some participants might have had a lower threshold for `often` than others, diluting the imputed time spent on each activity.
+    On the other hand, participants who respond `often` to more activities really *might* have a more diverse workday.
+    The problem is, that, with normative data, we don't know which is the case; centering and standardisation will negate mean and spread either way.
+2. It is also conceivable that given the *ipsative* nature of time spent on a number of competing activities, respondents *may* already have "self-censored" in their usage of the normative survey instrument, giving, in effect, ipsative replies of their time budgets.
+    They may also *not* have done that, and replied to each activity in isolation; there is now way of knowing from the data.
+3. We do not know whether participants considered the responses to the various activity questions to be mutually exclusive, or not.
+    On the one hand, they might have assumed that these activies can *overlap* during any one time in their workday --- perhaps, they replied `often` to `repair` and `monit`oring, because they often do both at the same time.
+    On the other hand, they might have assumed that these activies must *not* overlap, and consequently rated `repair` and `monit`oring both as merely `sometimes`.
+
+```{r distro-act, fig.cap="Distribution of Number of Reported Activities"}
+diaries_long <- mutate(.data = diaries_long, atall = raw > 1)
+diaries_long <- group_by(.data = diaries_long, respondent)
+n_of_act <- summarise(.data = diaries_long, n_of_act = sum(atall))
+
+g <- ggplot(data = n_of_act, mapping = aes(x = n_of_act)) + geom_histogram(na.rm = TRUE, bins = 17)
+g <- g + labs(x = "Number of Activities Rated Often or Sometimes")
+if (pensieve:::assert_n_infer_use_js()) {
+  ggplotly(g)
+} else {
+  plot(g)
+}
+```
+
+As figure \@ref(fig:distro-act) shows, this is by no means an academic problem: Participants differ widely in the number of activities rated at all, from `0` to all `16`, though we do not know what this means.
+
+It appears then, that the BIBB/BAuA data are ill-suited for a Q-mode analysis, at least using conventional (and polychoric) techniques.
+
+The limitations of the activity data in BIBB/BAuA are especially frustrating (see [this issue](https://github.com/QWrks/worktypes/issues/13)), because:
+
+1. Time spent on activities is *clearly* an ipsative phenomenon, participants should have no trouble reporting it as such.
+2. The *inverse* problem of analysing ipsative phenomena in R-mode (compositional data) is well understood and largely solved. [^weight-by-hours]
 
 [^weight-by-hours]: In both Q- and R-mode, in addition to the study weight, records could also be weighted by their reported hours.
     Based on the relative wide spread in working hours in figure \@ref(fig:freq-hours), this would change the focus of our analysis considerably; instead of jobs, we would be studying work hours done in the economy.
-
-Such differences in means are not a theoretical concern.
-
-
-
-
-### Ipsative vs. Normative Measurement (Input Data)
-
-
-
-### Centering and Standardization
+    See [this issue](https://github.com/QWrks/worktypes/issues/12).

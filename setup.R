@@ -8,7 +8,14 @@ library(tidyverse)
 
 # knitr setup ====
 #opts_knit$set(root.dir = normalizePath(getwd()))  # make sure the knitr path is correct
-knitr::opts_chunk$set(tidy = TRUE, cache = TRUE, echo = FALSE, message = FALSE, out.width="100%")  # tidy formats code nicely in echo
+knitr::opts_chunk$set(tidy = TRUE,
+                      cache = TRUE,
+                      autodep = TRUE,
+                      echo = FALSE,
+                      message = FALSE,
+                      out.width="100%",
+                      fig.width = 9,
+                      fig.height = 9)  # tidy formats code nicely in echo
 options(digits = 2)  # display only 2 digits in knitr output
 options(scipen = 999)
 Sys.setenv(TZ="Europe/Berlin")
