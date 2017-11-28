@@ -30,3 +30,6 @@ deploy:
 
 notifications:
   email: false
+
+after_failure:
+  - cat worktypes.log
