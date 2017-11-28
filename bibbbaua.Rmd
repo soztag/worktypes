@@ -133,7 +133,7 @@ kable(
 
 ## Limitations of the Data
 
-The BIBB/BAuA Employment Survey is a relatively large, in-depth and widely used dataset, going back to a a first wave in 1979 (using a longitudinal, but not panel design).
+The BIBB/BAuA Employment Survey is a relatively large, in-depth and widely used dataset, going back to a first wave in 1979 (using a longitudinal, but not panel design).
 It also carries some limitations that are worth keeping in mind for the below analysis:
 
 1. The survey may carry substantial (hidden) bias.
