@@ -564,7 +564,7 @@ The greater problem with Q-scaled data, is that the respondents were not aware t
 
 In effect, we would be treating their responses *as if they had* replied to an ipsative instrument, and crudely imputing diaries from normative data.
 
-```{r imputed-diary, fig.cap="Select Imputed Activity Diaries"}
+```{r imputed-diary, fig.cap="Select Imputed Activity Diaries", include=FALSE}
 g <- ggplot(data = diaries_sample, mapping = aes(
   x = respondent,
   y = percent * 100,
@@ -581,7 +581,7 @@ if (!(pensieve:::assert_n_infer_use_js())) {
 }
 ```
 
-```{r imputed-diary-byhrs, fig.cap="Select Imputed Activity Diaries, Scaled to Weekly Hours"}
+```{r imputed-diary-byhrs, fig.cap="Select Imputed Activity Diaries, Scaled to Weekly Hours", include = FALSE}
 g <- ggplot(data = diaries_sample, mapping = aes(
   x = respondent,
   y = percent * hours,
