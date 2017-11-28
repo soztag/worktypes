@@ -9,6 +9,7 @@ library(tidyverse)
 # knitr setup ====
 #opts_knit$set(root.dir = normalizePath(getwd()))  # make sure the knitr path is correct
 knitr::opts_chunk$set(tidy = TRUE,
+                      include = FALSE,
                       cache = TRUE,
                       autodep = TRUE,
                       echo = FALSE,
