@@ -638,3 +638,61 @@ The limitations of the activity data in BIBB/BAuA are especially frustrating (se
 [^weight-by-hours]: In both Q- and R-mode, in addition to the study weight, records could also be weighted by their reported hours.
     Based on the relative wide spread in working hours in figure \@ref(fig:freq-hours), this would change the focus of our analysis considerably; instead of jobs, we would be studying work hours done in the economy.
     See [this issue](https://github.com/QWrks/worktypes/issues/12).
+
+
+## R-Mode Analysis
+
+### Correlations
+
+We start by inspecting the polychoric correlations, displayed in figure \@ref(fig:polycor).
+
+```{r polycor, fig.cap="Polycholic Correlations With Pairwise Complete Observations (Unweighted)"}
+polies <- polycor::hetcor(data = as.data.frame(act[, 1:16]), 
+                          ML = TRUE, 
+                          std.err = TRUE, 
+                          bins = 3, 
+                          pd = TRUE,
+                          use = "pairwise.complete.obs")
+pensieve:::plot_heatmap(color_matrix = polies$correlations, 
+                        color_title = "Polychoric Correlations")
+```
+
+Surprisingly, there are *some* correlated activities, but none that are especially strongly correlated.
+
+To check the result, we can also inspect weighted polychoric correlations using a different package in figure \@ref(fig:weighted-polycor).
+
+```{r weighted-polycor, fig.cap="Polycholic Correlations With Pairwise Complete Observations (Weighted)"}
+act_compl <- na.omit(act)
+w_polies <- polies$correlations
+w_polies[,] <- NA
+for (rw in 1:nrow(w_polies)) {
+  for (cl in 1:ncol(w_polies)) {
+    w_polies[rw, cl] <- wCorr::weightedCorr(
+      x = unlist(act_compl[, rw], use.names = FALSE),
+      y = unlist(act_compl[, cl], use.names = FALSE),
+      method = "Polychoric",
+      weights = act_compl$weight,
+      ML = TRUE)
+  } 
+}
+pensieve:::plot_heatmap(color_matrix = w_polies,
+                        color_title = "Polychoric Correlations")
+```
+
+The differences are neglibible.
+
+
+### Parallel Analysis
+
+Next, we run a parallel analysis to determine the number of factors that can be exctracted from the data.
+
+```{r paran, eval=FALSE}
+random.polychor.pa::random.polychor.pa(data.matrix = as.matrix(act[,1:16]),
+                                       nrep = 10,
+                                       q.eigen = .95,
+                                       comparison = "random",
+                                       fit.pa = FALSE,
+                                       print.all = FALSE)
+help(random.polychor.pa)
+```
+

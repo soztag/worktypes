@@ -9,6 +9,9 @@ Imports:
   plotly,
   svglite,
   tidyverse,
-  pensieve
+  pensieve,
+  polycor,
+  random.polychor.pa,
+  wCorr
 Remotes:
   maxheld83/pensieve
