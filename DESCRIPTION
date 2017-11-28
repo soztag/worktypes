@@ -2,7 +2,6 @@ Package: worktypes
 Title: Does not matter.
 Version: 0.0.1
 Imports:
-  reshape2,
   bookdown,
   devtools,
   factoextra,

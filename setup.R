@@ -1,5 +1,5 @@
 # dependencies ====
-library(bookdown)
+# library(bookdown)
 library(forcats)
 library(haven)
 library(knitr)
