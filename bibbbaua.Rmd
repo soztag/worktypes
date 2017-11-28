@@ -758,31 +758,34 @@ Such a model explains **`r r2*100`** percent of the total variance, a comparativ
 
 ### PCA results
 
-```{r pcares, include = FALSE, eval = FALSE}
+```{r pcares, fig.cap="Loadings of Two Varimax Rotated Components"}
 pcarot <- psych::principal(r = polies$correlations,
                            nfactors = 2,
                            residuals = FALSE,
                            rotate = "varimax")
-pcarot <- pcaPA::PA(dataMatrix = as.data.frame(act[,1:16]),
-                    )
-FactoMineR::PCA()
-factoextra::fviz_pca_biplot(pcarot)
+loas <- as.data.frame(unclass(pcarot$loadings))
+loas$var <- rownames(loas)
+
+g <- ggplot(data = loas, mapping = aes(x = RC1, y = RC2, color = var, label = var))
+g <- g + geom_point(size = 3)
+g <- g + xlab(label = "RC1 (Service and Knowledge Sector) ") + xlim(-1, 1)
+g <- g + ylab(label = "RC2 (Industry and Manufacturing)") + ylim(-1,1)
+
+if (!(pensieve:::assert_n_infer_use_js())) {
+  g <- g + scale_color_discrete(guide = FALSE)
+  g <- g + ggrepel::geom_text_repel()
+  plot(g)
+} else {
+  ggplotly(g)
+}
 ```
 
+Figure \@ref(fig:pcares) gives the final result of the analysis.
+It confirms the pattern initially visible from the correlation heatmap: some activities covarying around manufacturing and others loading highly on what might be called the service and knowledge economy.
+
+Because the analysis is based on polychoric correlations, short of an IRT-approach, scores cannot be calculated.
 
 
 ### CFA results
-
-```{r fares, include = FALSE, eval = FALSE}
-fares <- psych::fa(r = as.data.frame(act[,1:16]),
-                   nfactors = 2,
-                   rotate = "varimax",
-                   scores = "regression",
-                   covar = FALSE,
-                   missing = TRUE,
-                   impute = "median",
-                   cor = "poly")
-```
-
 
 (skipped for now, because results will likely be *very* similar to PCA results.)
