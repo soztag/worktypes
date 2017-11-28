@@ -653,11 +653,19 @@ polies <- polycor::hetcor(data = as.data.frame(act[, 1:16]),
                           bins = 3, 
                           pd = TRUE,
                           use = "pairwise.complete.obs")
-pensieve:::plot_heatmap(color_matrix = polies$correlations, 
+g <- pensieve:::plot_heatmap(color_matrix = polies$correlations, 
                         color_title = "Polychoric Correlations")
+if (!(pensieve:::assert_n_infer_use_js())) {
+  plot(g)
+} else {
+  ggplotly(g)
+}
 ```
 
 Surprisingly, there are *some* correlated activities, but none that are especially strongly correlated.
+Highlights include `manuf`acturing, `meas`uring, `monit`oring and `repair`, perhaps all found in industrial and manufacturing environments.
+Another apparent cluster includes `advice`, `info`rmation, `orga`nisation and `marketing`, as might be expected of so-called "knowledge work".
+The patterns in the correlation matrix are still a little too complex for direct interpretation, and do not, on cursory inspection, reveal an obvious pattern of covariance in line with our hypothesized typology.
 
 To check the result, we can also inspect weighted polychoric correlations using a different package in figure \@ref(fig:weighted-polycor).
 
@@ -675,24 +683,79 @@ for (rw in 1:nrow(w_polies)) {
       ML = TRUE)
   } 
 }
-pensieve:::plot_heatmap(color_matrix = w_polies,
-                        color_title = "Polychoric Correlations")
+g <- pensieve:::plot_heatmap(color_matrix = w_polies,
+                             color_title = "Polychoric Correlations")
+if (!(pensieve:::assert_n_infer_use_js())) {
+  plot(g)
+} else {
+  ggplotly(g)
+}
 ```
 
 The differences are neglibible.
 
 
-### Parallel Analysis
+### Factor Retention
 
-Next, we run a parallel analysis to determine the number of factors that can be exctracted from the data.
+To determine the number of factors to be retained, we here rely on the simpler PCA algorithm, even though the downstream analysis will utilise proper FA, as is commonly done.
 
-```{r paran, eval=FALSE}
-random.polychor.pa::random.polychor.pa(data.matrix = as.matrix(act[,1:16]),
-                                       nrep = 10,
-                                       q.eigen = .95,
-                                       comparison = "random",
-                                       fit.pa = FALSE,
-                                       print.all = FALSE)
-help(random.polychor.pa)
+```{r pca}
+pcares <- psych::principal(r = polies$correlations,
+                           nfactors = 10,
+                           residuals = FALSE,
+                           rotate = "none")
+nfacs <- sum(pcares$values > 1)
 ```
 
+The first `r nfacs` principal components have an Eigenvalue higher than 1 (Kaiser-Guttman-Criterion), makin them preliminarily acceptable exctraction.
+
+
+```{r paran, fig.cap="Scree Plot with 1000 Simulated Runs, 95th Percentile (random.polychor.pa)", include=FALSE, eval=FALSE}
+# this is a very small pkg and produces weird results.
+pa_act <- as.matrix(act_compl[,1:16])
+pa_act[pa_act == "never"] <- 1
+pa_act[pa_act == "sometimes"] <- 2
+pa_act[pa_act == "often"] <- 3
+storage.mode(pa_act) <- "integer"
+library(MASS)
+pa1 <- random.polychor.pa::random.polychor.pa(data.matrix = pa_act,
+                                                  nrep = runs,
+                                                  q.eigen = .95,
+                                                  comparison = "random",
+                                                  fit.pa = FALSE,
+                                                  print.all = FALSE,
+                                                  diff.fact = FALSE)
+```
+
+The `random.polychor.pa` suggests that, using polychoric correlations, between `2` and `3` factors pass a Velicer MAP criterium.
+
+```{r paran2, fig.cap = "Scree Plot with 1000 Simulated Runs, 50th, 95th and 99th Percentile (pcaPA)", autodep = FALSE}
+pa2 <- pcaPA::PA(dataMatrix = as.data.frame(act_compl[, 1:16]),
+                 percentiles = c(.5, .95, .99),
+                 nReplicates = runs,
+                 type = "ordered",
+                 use = "pairwise.complete.obs",
+                 algorithm = "polychoric")
+g <- plot(pa2)
+
+if (!(pensieve:::assert_n_infer_use_js())) {
+  plot(g)
+} else {
+  ggplotly(g)
+}
+```
+
+Also using polychoric correlations, a (more mainstream) parallel analysis (using `pcaPA::PA()`) suggests that only `2` factors can be retained (no matter the percentile).
+All later principal components have Eigenvalues that are insignificantly different from those that could be expected from random, similarly parametrized data, plotted in figure \@ref(fig:paran2).
+When debiased (by the random Eigenvalues), they no longer pass the Kaiser-Guttman rule of being greater than 1.
+Parallel Analysis is quite sensitive to large sample sizes, tending --- if anything --- towards *over-retention* in datasets as long as BIBB/BAuA.
+Therefore, the PA criterion should be taken as a strong indication to retain only two factors.
+This relatively small retention may be a result of the underlying low information-theoretic value of the three-level ordinal activity ratings.
+
+
+### PCA results
+
+
+
+
+### CFA results

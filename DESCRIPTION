@@ -6,6 +6,8 @@ Imports:
   forcats,
   haven,
   knitr,
+  MASS,
+  pcaPA,
   plotly,
   svglite,
   tidyverse,
