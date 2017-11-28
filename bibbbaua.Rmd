@@ -743,6 +743,7 @@ if (!(pensieve:::assert_n_infer_use_js())) {
 } else {
   ggplotly(g)
 }
+r2 <- sum(pa2$observed$eigenValues[1:2]/16)
 ```
 
 Also using polychoric correlations, a (more mainstream) parallel analysis (using `pcaPA::PA()`) suggests that only `2` factors can be retained (no matter the percentile).
@@ -751,6 +752,8 @@ When debiased (by the random Eigenvalues), they no longer pass the Kaiser-Guttma
 Parallel Analysis is quite sensitive to large sample sizes, tending --- if anything --- towards *over-retention* in datasets as long as BIBB/BAuA.
 Therefore, the PA criterion should be taken as a strong indication to retain only two factors.
 This relatively small retention may be a result of the underlying low information-theoretic value of the three-level ordinal activity ratings.
+
+Such a model explains **`r r2*100`** percent of the total variance, a comparatively low to medium value.
 
 
 ### PCA results
