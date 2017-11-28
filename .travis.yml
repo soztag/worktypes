@@ -11,6 +11,7 @@ addons:
   apt:
     packages:
       - libgsl0ldbl
+      - libgsl0-dev
 
 script:
   - Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
