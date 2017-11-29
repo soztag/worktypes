@@ -8,6 +8,7 @@ Imports:
   FactoMineR,
   forcats,
   ggrepel,
+  ggplot2,
   haven,
   knitr,
   MASS,
@@ -20,4 +21,6 @@ Imports:
   random.polychor.pa,
   wCorr
 Remotes:
-  maxheld83/pensieve
+  maxheld83/pensieve,
+  tidyverse/ggplot2,
+  ropensci/plotly
