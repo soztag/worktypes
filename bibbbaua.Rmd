@@ -575,11 +575,12 @@ g <- g + scale_y_continuous(name = "Imputed Percentage of Worktime")
 g <- g + scale_x_discrete(name = "Selected Respondents (BIBB/BAuA Intnr)")
 g <- g + scale_fill_discrete(name = "Activity")
 g <- g + coord_flip()
-if (!(pensieve:::assert_n_infer_use_js())) {
-  plot(g)
-} else {
-  ggplotly(g)
-}
+# if (!(pensieve:::assert_n_infer_use_js())) {
+#   plot(g)
+# } else {
+#   ggplotly(g)
+# }
+plot(g)
 ```
 
 ```{r imputed-diary-byhrs, fig.cap="Select, Hours-Weighted Imputed Activity Diaries"}
@@ -592,11 +593,12 @@ g <- g + scale_y_continuous(name = "Imputed Weekly Hours Spent on Activity")
 g <- g + scale_x_discrete(name = "Selected Respondents (BIBB/BAuA Intnr)")
 g <- g + scale_fill_discrete(name = "Activity")
 g <- g + coord_flip()
-if (!(pensieve:::assert_n_infer_use_js())) {
-  plot(g)
-} else {
-  ggplotly(g)
-}
+# if (!(pensieve:::assert_n_infer_use_js())) {
+#   plot(g)
+# } else {
+#   ggplotly(g)
+# }
+plot(g)
 ```
 
 Figures \@ref(fig:imputed-diary) and \@ref(fig:imputed-diary-byhrs) give such imputed diary entries, scaled to a sum of 100 percent and to their reported weekly working hours respectively.

@@ -18,4 +18,4 @@ knitr::opts_chunk$set(tidy = TRUE,
 options(digits = 2)  # display only 2 digits in knitr output
 options(scipen = 999)
 Sys.setenv(TZ="Europe/Berlin")
-runs <- 10
+runs <- 1000
