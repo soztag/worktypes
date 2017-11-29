@@ -13,11 +13,11 @@ knitr::opts_chunk$set(tidy = TRUE,
                       autodep = TRUE,
                       echo = FALSE,
                       message = FALSE,
-                      out.width = "100%",
+                      out.width = "90%",
                       fig.pos="t!",
                       fig.width = 7,
                       fig.height = 7)  # tidy formats code nicely in echo
 options(digits = 2)  # display only 2 digits in knitr output
 options(scipen = 999)
 Sys.setenv(TZ="Europe/Berlin")
-runs <- 1000
+runs <- 10
