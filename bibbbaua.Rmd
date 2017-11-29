@@ -462,7 +462,7 @@ By contrast, a participant who reported `often` for eight categories, and `none`
 [^polychor-q]: Using the aforementioned polychoric correlations would infer the underlying interval-scaled data in a more sophisticated way, as described in the above.
     The implications would remain the same.
 <!-- TODO MH: Plot overflow -->
-```{r centered-activities, fig.cap="Centered Activities"}
+```{r centered-activities, fig.cap="Centered Activities", include = FALSE}
 diaries <- as.matrix(act[,1:16])
 diaries[,] <- NA
 storage.mode(diaries) <- "numeric"
@@ -539,7 +539,7 @@ Respondents are similar, when they share actitivies with extreme positive or neg
 
 After centering only, those participants with greatly spread values may have an outsized effect on the resulting factors.
 <!-- TODO MH: Plot overflow -->
-```{r scaled-activities, fig.cap="Standardized Activities"}
+```{r scaled-activities, fig.cap="Standardized Activities", include = FALSE}
 g <- ggplot(data = diaries_sample, mapping = aes(
   x = respondent,
   y = scaled,
@@ -581,7 +581,7 @@ if (!(pensieve:::assert_n_infer_use_js())) {
 }
 ```
 
-```{r imputed-diary-byhrs, fig.cap="Select Imputed Activity Diaries, Scaled to Weekly Hours", include = FALSE}
+```{r imputed-diary-byhrs, fig.cap="Select, Hours-Weighted Imputed Activity Diaries", include = FALSE}
 g <- ggplot(data = diaries_sample, mapping = aes(
   x = respondent,
   y = percent * hours,
@@ -612,7 +612,7 @@ This presentation of the data looks more palatable, but it carries the same unde
     On the one hand, they might have assumed that these activies can *overlap* during any one time in their workday --- perhaps, they replied `often` to `repair` and `monit`oring, because they often do both at the same time.
     On the other hand, they might have assumed that these activies must *not* overlap, and consequently rated `repair` and `monit`oring both as merely `sometimes`.
 
-```{r distro-act, fig.cap="Distribution of Number of Reported Activities"}
+```{r distro-act, fig.cap="Distribution of Number of Reported Activities", , include = FALSE}
 diaries_long <- mutate(.data = diaries_long, atall = raw > 1)
 diaries_long <- group_by(.data = diaries_long, respondent)
 n_of_act <- summarise(.data = diaries_long, n_of_act = sum(atall))
@@ -646,7 +646,7 @@ The limitations of the activity data in BIBB/BAuA are especially frustrating (se
 
 We start by inspecting the polychoric correlations, displayed in figure \@ref(fig:polycor).
 
-```{r polycor, fig.cap="Polycholic Correlations With Pairwise Complete Observations (Unweighted)"}
+```{r polycor, fig.cap="Polycholic Correlations With Pairwise Complete Observations (Unweighted)", include = FALSE}
 polies <- polycor::hetcor(data = as.data.frame(act[, 1:16]), 
                           ML = TRUE, 
                           std.err = TRUE, 
@@ -669,7 +669,7 @@ The patterns in the correlation matrix are still a little too complex for direct
 
 To check the result, we can also inspect weighted polychoric correlations using a different package in figure \@ref(fig:weighted-polycor).
 
-```{r weighted-polycor, fig.cap="Polycholic Correlations With Pairwise Complete Observations (Weighted)"}
+```{r weighted-polycor, fig.cap="Polycholic Correlations With Pairwise Complete Observations (Weighted)", include = FALSE}
 act_compl <- na.omit(act)
 w_polies <- polies$correlations
 w_polies[,] <- NA
@@ -729,7 +729,7 @@ pa1 <- random.polychor.pa::random.polychor.pa(data.matrix = pa_act,
 
 The `random.polychor.pa` suggests that, using polychoric correlations, between `2` and `3` factors pass a Velicer MAP criterium.
 
-```{r paran2, fig.cap = "Scree Plot with 1000 Simulated Runs, 50th, 95th and 99th Percentile (pcaPA)", autodep = FALSE}
+```{r paran2, fig.cap = "Scree Plot with 1000 Simulated Runs, 50th, 95th and 99th Percentile (pcaPA)", autodep = FALSE, include = FALSE}
 pa2 <- pcaPA::PA(dataMatrix = as.data.frame(act_compl[, 1:16]),
                  percentiles = c(.5, .95, .99),
                  nReplicates = runs,
