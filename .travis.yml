@@ -3,6 +3,9 @@ pandoc_version: 1.19.2.1
 
 warnings_are_errors: false
 
+before_install:
+  - tlmgr install float
+
 cache:
   packages: true
   directories:
