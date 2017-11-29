@@ -374,7 +374,7 @@ Independent of the *unit* of analysis, we can also choose a *mode* of analysis. 
 By contrast, in *Q-technique*, rows are populated by variables, and columns by participants.
 This approach is also known, more informatively, as *inverted factor analysis*, because, relative to R-technique, the rows and columns in the data matrix are being *transposed* prior to analysis.
 
-To illustrate the difference between these two modes, consider an analysis of the lengths of different body parts of different mammals (example taken from @Brown1980: 13).
+To illustrate the difference between these two modes, consider an analysis of the lengths of different body parts of different mammals (example taken from @Brown1980 [p. 13]).
 In R-mode, the animals are the observations-rows in the data matrix, and the body parts are the variable-columns, with lengths entered in, say, centimeters, in the cells.
 R-analysis then reveals common patterns among the body part lengths, *across* the animals. [^stand-r]
 For example, across all mammals, leg and arm lengths probably covary more strongly (because they need to be approximately the same length for four-legged mammals) than leg length and torso length.
