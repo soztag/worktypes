@@ -288,7 +288,7 @@ if (!(pensieve:::assert_n_infer_use_js())) {
 Figure \@ref(fig:freqs) plots the raw and weighted counts of reported frequencies across the reported work activities.
 The activities have a fairly wide spread; giving `advice` is done often by more than half of the respondents, while `manuf`acturing is quite rare.
 The overall reported frequencies sum up to *much* more than 100 percent, which raises the possibility that participants did not consider the activities to be mutually exclusive.
-It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities, which may
+It also shows that, at least at the aggregate level, the weighting has some effect, but does not cause a dramatic shift in the relative frequency of activities.
 
 ```{r freq-hours, fig.cap="Reported Working Hours (Unweighted)"}
 g <- ggplot(data = act, mapping = aes(x = hours)) + geom_histogram(na.rm = TRUE, bins = 30)
@@ -378,7 +378,6 @@ To illustrate the difference between these two modes, consider an analysis of th
 In R-mode, the animals are the observations-rows in the data matrix, and the body parts are the variable-columns, with lengths entered in, say, centimeters, in the cells.
 R-analysis then reveals common patterns among the body part lengths, *across* the animals. [^stand-r]
 For example, across all mammals, leg and arm lengths probably covary more strongly (because they need to be approximately the same length for four-legged mammals) than leg length and torso length.
-R-mode, in other words, yields the dominant dimensions across which mammals *differ*, such as
 In Q-mode, the data matrix is transposed, with animals as the variable-columns and body parts as the observation-rows.
 Q-analysis then reveals common patterns among the animals, *across* their body parts.
 For example, the body part measurements of a gorilla and a human will be more similar, than the body part lengths of a giraffe. [^stand-q]
