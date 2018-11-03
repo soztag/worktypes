@@ -8,6 +8,9 @@ addons:
     - libgsl0ldbl
     - libgsl0-dev
     - ghostscript
+before_install:
+# auth for gh submodule
+- echo -e "machine github.com\n  login $GITHUB_PAT" >> ~/.netrc
 script:
 - Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
 - Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::pdf_book')"
