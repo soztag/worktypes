@@ -1,31 +1,25 @@
 language: r
-
 warnings_are_errors: false
-
 cache:
   packages: true
-  directories:
-    - $TRAVIS_BUILD_DIR/_bookdown_files
-
 addons:
   apt:
     packages:
-      - libgsl0ldbl
-      - libgsl0-dev
-      - ghostscript
-
+    - libgsl0ldbl
+    - libgsl0-dev
+    - ghostscript
 script:
-  - Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
-  - Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::pdf_book')"
-
+- Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
+- Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::pdf_book')"
+after_success:
+- curl -OL http://raw.githubusercontent.com/soztag/fau_deploy/master/deploy2karli.sh
 deploy:
-  - provider: pages
-    github_token: $GITHUB_PAT
-    local_dir: _book/
-    skip_cleanup: true
-    email: "travis-deploy-github-pages-deploy@travis-ci.org"
-    on:
-      branch: master
-
-notifications:
-  email: false
+- provider: script
+  skip_cleanup: true
+  script:
+  - bash deploy2karli.sh
+  on:
+    branch: master
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_9ba6b43c6e35_key -iv $encrypted_9ba6b43c6e35_iv
+  -in karli_rsa.enc -out /tmp/karli_rsa -d

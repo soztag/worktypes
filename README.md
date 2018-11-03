@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/QWrks/worktypes.svg?token=VqJKxxUwxXFJyYyqJx7G&branch=master)](https://travis-ci.com/QWrks/worktypes)
+[![Build Status](https://travis-ci.com/soztag/worktypes.svg?token=VqJKxxUwxXFJyYyqJx7G&branch=master)](https://travis-ci.com/soztag/worktypes)
 
 # worktypes: dimensionality reduction of BIBB/BAUA data
 
