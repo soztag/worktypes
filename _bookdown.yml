@@ -1,4 +1,5 @@
 book_filename: "worktypes"
+output_dir: _site
 rmd_files: [
   "index.Rmd",
   "bibbbaua.Rmd",
