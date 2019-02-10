@@ -13,7 +13,6 @@ before_install:
 - echo -e "machine github.com\n  login $GITHUB_PAT" >> ~/.netrc
 script:
 - Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
-- Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::pdf_book')"
 after_success:
 - curl -OL http://raw.githubusercontent.com/soztag/fau_deploy/master/deploy2karli.sh
 deploy:
