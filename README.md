@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.com/soztag/worktypes.svg?token=VqJKxxUwxXFJyYyqJx7G&branch=master)](https://travis-ci.com/soztag/worktypes)
+ <!-- badges: start -->
+[![Actions Status](https://wdp9fww0r9.execute-api.us-west-2.amazonaws.com/production/badge/soztag/worktypes)](https://github.com/soztag/worktypes/actions)
+  <!-- badges: end -->
 
 # worktypes: dimensionality reduction of BIBB/BAUA data
 
